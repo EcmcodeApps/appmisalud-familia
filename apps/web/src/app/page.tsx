@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function LandingPage() {
   useEffect(() => {
@@ -50,6 +50,9 @@ export default function LandingPage() {
 }
 
 function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = () => setMenuOpen(false);
+
   return (
     <header className="fixed top-0 w-full z-50 glass-header shadow-sm h-16 flex justify-between items-center px-4 md:px-12">
       <div className="flex items-center gap-2">
@@ -70,9 +73,54 @@ function Header() {
           Crear mi cuenta
         </Link>
       </nav>
-      <button className="md:hidden p-2 text-[#42474e]" aria-label="Menú">
-        <span className="material-symbols-outlined">menu</span>
+      <button
+        className="md:hidden p-2 text-[#42474e] rounded-full active:scale-95"
+        aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+        aria-expanded={menuOpen}
+        aria-controls="mobile-menu"
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        <span className="material-symbols-outlined">{menuOpen ? "close" : "menu"}</span>
       </button>
+      {menuOpen && (
+        <div
+          id="mobile-menu"
+          className="absolute left-4 right-4 top-[4.5rem] md:hidden rounded-2xl border border-[#c4c6cf] bg-white p-2 shadow-xl"
+        >
+          <a
+            className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-[#42474e] active:bg-[#ebeef0]"
+            href="#solucion"
+            onClick={closeMenu}
+          >
+            Solución
+            <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+          </a>
+          <a
+            className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-[#42474e] active:bg-[#ebeef0]"
+            href="#seguridad"
+            onClick={closeMenu}
+          >
+            Seguridad
+            <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+          </a>
+          <Link
+            href="/login"
+            className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-[#42474e] active:bg-[#ebeef0]"
+            onClick={closeMenu}
+          >
+            Iniciar sesión
+            <span className="material-symbols-outlined text-[20px]">login</span>
+          </Link>
+          <Link
+            href="/register"
+            className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-[#002045] px-4 py-3 text-sm font-semibold text-white active:scale-[0.98]"
+            onClick={closeMenu}
+          >
+            Crear mi cuenta
+            <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+          </Link>
+        </div>
+      )}
     </header>
   );
 }
