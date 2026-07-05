@@ -29,6 +29,7 @@ Thumbs.db
 .vscode/
 .idea/
 .claude/
+.railway-config-pull-*/
 
 # Logs
 *.log
