@@ -1,0 +1,36 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Documentos médicos ─────────────────────────────────────────────────
+    // Ruta real usada por la app: users/{uid}/documents/{filename}
+    match /users/{uid}/documents/{fileName} {
+      allow read:   if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+                    && request.resource.size < 20 * 1024 * 1024
+                    && (request.resource.contentType.matches('application/pdf')
+                        || request.resource.contentType.matches('image/.*'));
+      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow update: if false; // Los archivos son inmutables — se eliminan y recrean
+    }
+
+    // ── Fotos de perfil de usuario ─────────────────────────────────────────
+    match /users/{uid}/profile/{fileName} {
+      allow read:   if request.auth != null;
+      allow write:  if request.auth != null && request.auth.uid == uid
+                    && request.resource.size < 5 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+    }
+
+    // ── Resúmenes PDF de emergencia (generados por backend) ────────────────
+    match /users/{uid}/summaries/{fileName} {
+      allow read:  if request.auth != null && request.auth.uid == uid;
+      allow write: if false; // Solo el backend
+    }
+
+    // ── Bloquear todo lo demás ─────────────────────────────────────────────
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

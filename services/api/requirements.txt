@@ -1,0 +1,15 @@
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+python-dotenv==1.0.1
+firebase-admin==6.6.0
+pydantic==2.10.3
+pydantic-settings==2.7.0
+httpx==0.28.1
+python-multipart==0.0.19
+pypdf==5.1.0
+pillow==11.0.0
+pytesseract==0.3.13
+slowapi==0.1.9
+python-jose[cryptography]==3.3.0
+reportlab==4.2.5
+openai==1.59.4
