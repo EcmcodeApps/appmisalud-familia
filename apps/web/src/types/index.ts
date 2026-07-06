@@ -41,7 +41,7 @@ export interface UserProfile {
   createdAt: Date;
   updatedAt: Date;
   onboardingCompleted: boolean;
-  role: "user";
+  role: "user" | "admin" | "owner";
   accountStatus: AccountStatus;
   subscriptionStatus: SubscriptionStatus;
   plan: "free_trial" | "economico" | "familiar" | string;
