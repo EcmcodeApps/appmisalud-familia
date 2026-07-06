@@ -5,6 +5,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { registerUser, loginWithGoogle } from "@/lib/firebase/auth";
 
+type LoginDestination = {
+  onboardingCompleted: boolean;
+  role: "user" | "admin" | "owner";
+};
+
+function getLoginDestination({ onboardingCompleted, role }: LoginDestination) {
+  if (role === "admin" || role === "owner") return "/admin";
+  return onboardingCompleted ? "/dashboard" : "/onboarding";
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -46,8 +56,8 @@ export default function RegisterPage() {
     setGoogleLoading(true);
     setError("");
     try {
-      const { onboardingCompleted } = await loginWithGoogle();
-      router.push(onboardingCompleted ? "/dashboard" : "/onboarding");
+      const result = await loginWithGoogle();
+      router.push(getLoginDestination(result));
     } catch {
       setError("No pudimos conectar con Google. Intenta de nuevo.");
     } finally {

@@ -6,6 +6,16 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { loginUser, loginWithGoogle } from "@/lib/firebase/auth";
 
+type LoginDestination = {
+  onboardingCompleted: boolean;
+  role: "user" | "admin" | "owner";
+};
+
+function getLoginDestination({ onboardingCompleted, role }: LoginDestination) {
+  if (role === "admin" || role === "owner") return "/admin";
+  return onboardingCompleted ? "/dashboard" : "/onboarding";
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -24,8 +34,8 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await loginUser(form.email, form.password);
-      router.push("/dashboard");
+      const result = await loginUser(form.email, form.password);
+      router.push(getLoginDestination(result));
     } catch {
       setError("Correo o contraseña incorrectos. Verifica tus datos.");
     } finally {
@@ -37,8 +47,8 @@ export default function LoginPage() {
     setGoogleLoading(true);
     setError("");
     try {
-      const { onboardingCompleted } = await loginWithGoogle();
-      router.push(onboardingCompleted ? "/dashboard" : "/onboarding");
+      const result = await loginWithGoogle();
+      router.push(getLoginDestination(result));
     } catch {
       setError("No pudimos conectar con Google. Intenta de nuevo.");
     } finally {

@@ -17,6 +17,7 @@ const googleProvider = new GoogleAuthProvider();
 export interface GoogleLoginResult {
   user: User;
   onboardingCompleted: boolean;
+  role: "user" | "admin" | "owner";
 }
 
 export async function loginWithGoogle(): Promise<GoogleLoginResult> {
@@ -31,6 +32,7 @@ export async function loginWithGoogle(): Promise<GoogleLoginResult> {
       return {
         user,
         onboardingCompleted: Boolean(data.onboardingCompleted ?? data.onboarding_completed),
+        role: normalizeRole(data.role),
       };
     }
 
@@ -65,7 +67,7 @@ export async function loginWithGoogle(): Promise<GoogleLoginResult> {
     console.warn("[AppMiSalud] Google Auth completó, pero no se pudo sincronizar el perfil.", error);
   }
 
-  return { user, onboardingCompleted: false };
+  return { user, onboardingCompleted: false, role: "user" };
 }
 
 export async function registerUser(
@@ -103,9 +105,16 @@ export async function registerUser(
   return user;
 }
 
-export async function loginUser(email: string, password: string): Promise<User> {
+export async function loginUser(email: string, password: string): Promise<GoogleLoginResult> {
   const { user } = await signInWithEmailAndPassword(auth, email, password);
-  return user;
+  const snap = await getDoc(doc(db, "users", user.uid));
+  const data = snap.exists() ? snap.data() : {};
+
+  return {
+    user,
+    onboardingCompleted: Boolean(data.onboardingCompleted ?? data.onboarding_completed),
+    role: normalizeRole(data.role),
+  };
 }
 
 export async function logoutUser(): Promise<void> {
@@ -118,4 +127,8 @@ export async function sendPasswordReset(email: string): Promise<void> {
 
 export function onAuthChange(callback: (user: User | null) => void) {
   return onAuthStateChanged(auth, callback);
+}
+
+function normalizeRole(role: unknown): "user" | "admin" | "owner" {
+  return role === "admin" || role === "owner" ? role : "user";
 }
