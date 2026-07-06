@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "./config";
+import { buildTrialFields } from "@/lib/subscription/trial";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -42,6 +43,7 @@ export async function loginWithGoogle(): Promise<GoogleLoginResult> {
       updatedAt: serverTimestamp(),
       onboardingCompleted: false,
       onboarding_completed: false,
+      ...buildTrialFields(),
       role: "user",
       accountStatus: "active",
       consent: {
@@ -79,6 +81,8 @@ export async function registerUser(
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     onboardingCompleted: false,
+    onboarding_completed: false,
+    ...buildTrialFields(),
     role: "user",
     accountStatus: "active",
     consent: {

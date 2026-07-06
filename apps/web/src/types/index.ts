@@ -1,4 +1,5 @@
 export type AccountStatus = "active" | "disabled" | "pending_review";
+export type SubscriptionStatus = "trial" | "trial_expired" | "active" | "past_due" | "cancelled";
 export type Relationship =
   | "yo" | "padre" | "madre" | "hijo" | "hija" | "conyuge"
   | "adulto_mayor" | "persona_discapacidad" | "cuidador" | "otro";
@@ -42,6 +43,10 @@ export interface UserProfile {
   onboardingCompleted: boolean;
   role: "user";
   accountStatus: AccountStatus;
+  subscriptionStatus: SubscriptionStatus;
+  plan: "free_trial" | "economico" | "familiar" | string;
+  trialStartedAt?: Date;
+  trialEndsAt?: Date;
   consent: UserConsent;
   settings: UserSettings;
 }

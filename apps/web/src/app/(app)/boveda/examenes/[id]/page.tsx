@@ -6,6 +6,7 @@ import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase/config";
 import { explainDocument, type AIExplainResponse } from "@/lib/api/client";
+import { useTrialStatus } from "@/lib/hooks/useTrialStatus";
 
 interface MedDoc {
   id: string;
@@ -44,6 +45,7 @@ export default function DetalleExamenPage() {
   const [aiResult, setAiResult]   = useState<AIExplainResponse | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError]     = useState("");
+  const { trial } = useTrialStatus();
 
   useEffect(() => {
     const uid = auth.currentUser?.uid;
@@ -57,6 +59,10 @@ export default function DetalleExamenPage() {
   }, [id, router]);
 
   async function handleExplain() {
+    if (trial?.isExpired) {
+      setAiError("Tu prueba gratuita finalizó. Activa el plan económico para generar resúmenes con IA.");
+      return;
+    }
     if (!doc_?.extractedText) {
       setAiError("Este documento no tiene texto extraído. Súbelo de nuevo con IA activada.");
       return;

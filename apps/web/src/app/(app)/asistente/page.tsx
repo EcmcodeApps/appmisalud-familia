@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase/config";
 import { summarizeDocuments, explainDocument, type AISummarizeResponse } from "@/lib/api/client";
+import { useTrialStatus } from "@/lib/hooks/useTrialStatus";
+import { TrialExpiredNotice } from "@/components/TrialStatusCard";
 
 interface Persona { id: string; name: string; role: string; birthDate?: string; sex?: string; }
 interface MedDoc  { id: string; docType: string; date: string; fileName: string; extractedText?: string; }
@@ -47,6 +49,7 @@ export default function AsistentePage() {
   const [input,          setInput]          = useState("");
   const [thinking,       setThinking]       = useState(false);
   const [displayName,    setDisplayName]    = useState("Usuario");
+  const { trial } = useTrialStatus();
 
   // Load data
   useEffect(() => {
@@ -85,6 +88,14 @@ export default function AsistentePage() {
   async function handleSend(overrideText?: string) {
     const text = (overrideText ?? input).trim();
     if (!text || thinking) return;
+    if (trial?.isExpired) {
+      addMessage({
+        role: "ai",
+        text: "",
+        error: "Tu prueba gratuita finalizó. Activa el plan económico para seguir usando IA Salud.",
+      });
+      return;
+    }
 
     setInput("");
     if (textareaRef.current) { textareaRef.current.style.height = "auto"; }
@@ -163,6 +174,7 @@ export default function AsistentePage() {
 
       {/* Chat area */}
       <main className="flex flex-col max-w-3xl mx-auto px-4 md:px-8 pb-48 pt-6 space-y-6 min-h-[calc(100vh-8rem)]">
+        <TrialExpiredNotice trial={trial} />
 
         {/* Welcome */}
         {showWelcome && (
@@ -189,8 +201,8 @@ export default function AsistentePage() {
             {/* Quick prompts */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full text-left">
               {QUICK_PROMPTS.map((p) => (
-                <button key={p.label} onClick={() => handleSend(p.label)}
-                  className="p-4 bg-white rounded-2xl border border-[rgba(196,198,207,0.4)] hover:bg-[#f1f4f6] transition-all text-left group"
+                <button key={p.label} onClick={() => handleSend(p.label)} disabled={trial?.isExpired}
+                  className="p-4 bg-white rounded-2xl border border-[rgba(196,198,207,0.4)] hover:bg-[#f1f4f6] transition-all text-left group disabled:cursor-not-allowed disabled:opacity-50"
                   style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
                   <span className="material-symbols-outlined text-[#13696a] mb-2 block">{p.icon}</span>
                   <p className="text-sm font-semibold text-[#002045] group-hover:text-[#13696a]">{p.label}</p>
@@ -282,12 +294,13 @@ export default function AsistentePage() {
               onKeyDown={handleKeyDown}
               rows={1}
               placeholder="Escribe tu consulta de salud aquí…"
+              disabled={trial?.isExpired}
               className="flex-1 border-none focus:ring-0 bg-transparent py-3 resize-none text-sm placeholder:text-[#74777f]/60 text-[#002045]"
               style={{ outline: "none", maxHeight: "8rem", overflowY: "auto" }}
             />
             <button
               onClick={() => handleSend()}
-              disabled={thinking || !input.trim()}
+              disabled={thinking || !input.trim() || trial?.isExpired}
               className="p-3 rounded-xl text-white transition-all active:scale-95 disabled:opacity-50"
               style={{ backgroundColor: "#002045" }}>
               {thinking

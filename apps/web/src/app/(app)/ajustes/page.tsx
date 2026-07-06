@@ -8,6 +8,8 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { deleteUser } from "firebase/auth";
 import { db, auth } from "@/lib/firebase/config";
 import { logoutUser } from "@/lib/firebase/auth";
+import { useTrialStatus } from "@/lib/hooks/useTrialStatus";
+import { TrialStatusCard } from "@/components/TrialStatusCard";
 
 type AIProvider = "recommended" | "deepseek" | "openai";
 
@@ -33,6 +35,7 @@ export default function AjustesPage() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState("");
   const [deletingAccount, setDeletingAccount] = useState(false);
+  const { trial } = useTrialStatus();
 
   // Load prefs from Firestore
   useEffect(() => {
@@ -111,13 +114,17 @@ export default function AjustesPage() {
         <div className="flex-1 min-w-0">
           <p className="font-bold text-[#002045] truncate">{name}</p>
           <p className="text-xs text-[#43474e] truncate">{email}</p>
-          <p className="text-xs text-[#13696a] font-semibold">Gestora Familiar · Premium</p>
+          <p className="text-xs text-[#13696a] font-semibold">
+            {trial?.status === "active" ? "Gestora Familiar · Activa" : "Gestora Familiar · Prueba gratuita"}
+          </p>
         </div>
         <Link href="/ajustes/perfil"
           className="p-2 rounded-full hover:bg-[#f1f4f6] transition-colors shrink-0">
           <span className="material-symbols-outlined text-[#002045]">edit</span>
         </Link>
       </section>
+
+      {trial && <TrialStatusCard trial={trial} compact />}
 
       {/* Cuenta y Seguridad */}
       <SettingsGroup label="Cuenta y Seguridad">

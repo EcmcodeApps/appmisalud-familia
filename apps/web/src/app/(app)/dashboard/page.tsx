@@ -3,9 +3,12 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase/config";
+import { useTrialStatus } from "@/lib/hooks/useTrialStatus";
+import { TrialStatusCard } from "@/components/TrialStatusCard";
 
 export default function DashboardPage() {
   const [displayName, setDisplayName] = useState("Usuario");
+  const { trial } = useTrialStatus();
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -23,6 +26,8 @@ export default function DashboardPage() {
         </h2>
         <p className="text-[#43474e] text-lg">Este es tu centro médico familiar.</p>
       </section>
+
+      {trial && <TrialStatusCard trial={trial} />}
 
       {/* Bento grid */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
