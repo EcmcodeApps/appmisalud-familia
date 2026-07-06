@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
+import { getIdTokenResult } from "firebase/auth";
 import { auth, db } from "@/lib/firebase/config";
 import { onAuthChange } from "@/lib/firebase/auth";
 
@@ -66,11 +67,14 @@ export default function AdminPage() {
         return;
       }
 
+      const token = await getIdTokenResult(user, true).catch(() => null);
+      const claimRole = token?.claims.role;
+      const hasAdminClaim = claimRole === "admin" || claimRole === "owner" || token?.claims.admin === true || token?.claims.owner === true;
       const snap = await getDoc(doc(db, "users", user.uid)).catch(() => null);
       const data = snap?.exists() ? snap.data() : {};
       const role = data.role;
       setAdminName(user.displayName || user.email || "Admin Root");
-      setAccess(role === "admin" || role === "owner" ? "allowed" : "denied");
+      setAccess(hasAdminClaim || role === "admin" || role === "owner" ? "allowed" : "denied");
     });
 
     return unsub;

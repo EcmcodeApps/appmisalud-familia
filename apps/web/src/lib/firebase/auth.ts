@@ -5,6 +5,7 @@ import {
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
+  getIdTokenResult,
   signInWithPopup,
   type User,
 } from "firebase/auth";
@@ -29,10 +30,11 @@ export async function loginWithGoogle(): Promise<GoogleLoginResult> {
 
     if (snap.exists()) {
       const data = snap.data();
+      const claimRole = await getClaimRole(user);
       return {
         user,
         onboardingCompleted: Boolean(data.onboardingCompleted ?? data.onboarding_completed),
-        role: normalizeRole(data.role),
+        role: claimRole ?? normalizeRole(data.role),
       };
     }
 
@@ -67,7 +69,7 @@ export async function loginWithGoogle(): Promise<GoogleLoginResult> {
     console.warn("[AppMiSalud] Google Auth completó, pero no se pudo sincronizar el perfil.", error);
   }
 
-  return { user, onboardingCompleted: false, role: "user" };
+  return { user, onboardingCompleted: false, role: await getClaimRole(user) ?? "user" };
 }
 
 export async function registerUser(
@@ -109,11 +111,12 @@ export async function loginUser(email: string, password: string): Promise<Google
   const { user } = await signInWithEmailAndPassword(auth, email, password);
   const snap = await getDoc(doc(db, "users", user.uid));
   const data = snap.exists() ? snap.data() : {};
+  const claimRole = await getClaimRole(user);
 
   return {
     user,
     onboardingCompleted: Boolean(data.onboardingCompleted ?? data.onboarding_completed),
-    role: normalizeRole(data.role),
+    role: claimRole ?? normalizeRole(data.role),
   };
 }
 
@@ -131,4 +134,12 @@ export function onAuthChange(callback: (user: User | null) => void) {
 
 function normalizeRole(role: unknown): "user" | "admin" | "owner" {
   return role === "admin" || role === "owner" ? role : "user";
+}
+
+async function getClaimRole(user: User): Promise<"admin" | "owner" | null> {
+  const token = await getIdTokenResult(user, true).catch(() => null);
+  const role = token?.claims.role;
+  if (role === "owner" || token?.claims.owner === true) return "owner";
+  if (role === "admin" || token?.claims.admin === true) return "admin";
+  return null;
 }

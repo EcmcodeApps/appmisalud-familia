@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import type { User } from "firebase/auth";
+import { getIdTokenResult, type User } from "firebase/auth";
 import { db } from "@/lib/firebase/config";
 import { onAuthChange } from "@/lib/firebase/auth";
 
@@ -17,6 +17,14 @@ interface ConsentState {
 
 function getDestination(role: unknown) {
   return role === "admin" || role === "owner" ? "/admin" : "/dashboard";
+}
+
+async function getTokenRole(user: User) {
+  const token = await getIdTokenResult(user, true).catch(() => null);
+  const role = token?.claims.role;
+  if (role === "owner" || token?.claims.owner === true) return "owner";
+  if (role === "admin" || token?.claims.admin === true) return "admin";
+  return null;
 }
 
 function getCurrentUser() {
@@ -50,9 +58,10 @@ export default function OnboardingPage() {
       }
 
       try {
+        const tokenRole = await getTokenRole(user);
         const snap = await getDoc(doc(db, "users", user.uid));
         const data = snap.exists() ? snap.data() : {};
-        const nextDestination = getDestination(data.role);
+        const nextDestination = getDestination(tokenRole ?? data.role);
         setDestination(nextDestination);
 
         if (data.onboardingCompleted === true || data.onboarding_completed === true) {
