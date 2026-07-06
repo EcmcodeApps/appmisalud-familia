@@ -13,12 +13,26 @@ import { auth, db } from "./config";
 
 const googleProvider = new GoogleAuthProvider();
 
-export async function loginWithGoogle(): Promise<User> {
+export interface GoogleLoginResult {
+  user: User;
+  onboardingCompleted: boolean;
+}
+
+export async function loginWithGoogle(): Promise<GoogleLoginResult> {
   const { user } = await signInWithPopup(auth, googleProvider);
-  // Crear perfil en Firestore solo si es nuevo usuario
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
-  if (!snap.exists()) {
+
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+
+    if (snap.exists()) {
+      const data = snap.data();
+      return {
+        user,
+        onboardingCompleted: Boolean(data.onboardingCompleted ?? data.onboarding_completed),
+      };
+    }
+
     await setDoc(userRef, {
       uid: user.uid,
       email: user.email,
@@ -27,6 +41,7 @@ export async function loginWithGoogle(): Promise<User> {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       onboardingCompleted: false,
+      onboarding_completed: false,
       role: "user",
       accountStatus: "active",
       consent: {
@@ -44,8 +59,11 @@ export async function loginWithGoogle(): Promise<User> {
         mobilePrintHintsEnabled: true,
       },
     });
+  } catch (error) {
+    console.warn("[AppMiSalud] Google Auth completó, pero no se pudo sincronizar el perfil.", error);
   }
-  return user;
+
+  return { user, onboardingCompleted: false };
 }
 
 export async function registerUser(

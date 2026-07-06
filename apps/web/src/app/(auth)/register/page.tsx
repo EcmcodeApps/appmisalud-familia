@@ -46,8 +46,8 @@ export default function RegisterPage() {
     setGoogleLoading(true);
     setError("");
     try {
-      await loginWithGoogle();
-      router.push("/onboarding");
+      const { onboardingCompleted } = await loginWithGoogle();
+      router.push(onboardingCompleted ? "/dashboard" : "/onboarding");
     } catch {
       setError("No pudimos conectar con Google. Intenta de nuevo.");
     } finally {

@@ -45,6 +45,7 @@ export default function OnboardingPage() {
           accepted_at: serverTimestamp(),
         },
         onboarding_completed: true,
+        onboardingCompleted: true,
       }, { merge: true });
       setShowModal(true);
     } catch {
