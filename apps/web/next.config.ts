@@ -37,6 +37,8 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: https: blob:",
               `connect-src ${connectSrc}`,
               "frame-src 'self' blob: https:",
+              "manifest-src 'self'",
+              "worker-src 'self' blob:",
             ].join("; "),
           },
         ],
