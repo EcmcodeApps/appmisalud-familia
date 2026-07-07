@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase/config";
 import { summarizeDocuments, explainDocument, type AISummarizeResponse } from "@/lib/api/client";
-import { useTrialStatus } from "@/lib/hooks/useTrialStatus";
-import { TrialExpiredNotice } from "@/components/TrialStatusCard";
 
 interface Persona { id: string; name: string; role: string; birthDate?: string; sex?: string; }
 interface MedDoc  { id: string; docType: string; date: string; fileName: string; extractedText?: string; }
@@ -49,7 +47,6 @@ export default function AsistentePage() {
   const [input,          setInput]          = useState("");
   const [thinking,       setThinking]       = useState(false);
   const [displayName,    setDisplayName]    = useState("Usuario");
-  const { trial } = useTrialStatus();
 
   // Load data
   useEffect(() => {
@@ -88,14 +85,6 @@ export default function AsistentePage() {
   async function handleSend(overrideText?: string) {
     const text = (overrideText ?? input).trim();
     if (!text || thinking) return;
-    if (trial?.isExpired) {
-      addMessage({
-        role: "ai",
-        text: "",
-        error: "Tu prueba gratuita finalizó. Activa el plan económico para seguir usando IA Salud.",
-      });
-      return;
-    }
 
     setInput("");
     if (textareaRef.current) { textareaRef.current.style.height = "auto"; }
@@ -148,9 +137,9 @@ export default function AsistentePage() {
       <div className="sticky top-16 z-40 flex items-center justify-between px-4 md:px-12 h-14 gap-3"
         style={{ backgroundColor: "rgba(247,250,252,0.9)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(196,198,207,0.3)" }}>
         <div className="flex items-center gap-2 min-w-0">
-          <span className="material-symbols-outlined text-[#13696a]"
+          <span className="material-symbols-outlined text-[#00B8A9]"
             style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
-          <h1 className="font-bold text-base text-[#002045] truncate"
+          <h1 className="font-bold text-base text-[#003A7A] truncate"
             style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
             Asistente IA
           </h1>
@@ -162,7 +151,7 @@ export default function AsistentePage() {
             <select
               value={selectedPersona}
               onChange={(e) => setSelectedPersona(e.target.value)}
-              className="h-9 pl-3 pr-8 text-sm border border-[#c4c6cf] rounded-xl bg-white appearance-none text-[#002045] font-semibold">
+              className="h-9 pl-3 pr-8 text-sm border border-[#c4c6cf] rounded-xl bg-white appearance-none text-[#003A7A] font-semibold">
               {personas.map((p) => (
                 <option key={p.id} value={p.id}>{p.name} ({p.role})</option>
               ))}
@@ -174,17 +163,16 @@ export default function AsistentePage() {
 
       {/* Chat area */}
       <main className="flex flex-col max-w-3xl mx-auto px-4 md:px-8 pb-48 pt-6 space-y-6 min-h-[calc(100vh-8rem)]">
-        <TrialExpiredNotice trial={trial} />
 
         {/* Welcome */}
         {showWelcome && (
           <div className="flex flex-col items-center text-center mt-8 mb-6">
             <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
               style={{ backgroundColor: "rgba(162,237,237,0.3)", boxShadow: "0 0 15px rgba(19,105,106,0.15)" }}>
-              <span className="material-symbols-outlined text-[#13696a] text-4xl"
+              <span className="material-symbols-outlined text-[#00B8A9] text-4xl"
                 style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
             </div>
-            <h2 className="text-2xl font-bold text-[#002045] mb-2"
+            <h2 className="text-2xl font-bold text-[#003A7A] mb-2"
               style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
               Hola, {displayName}
             </h2>
@@ -193,19 +181,19 @@ export default function AsistentePage() {
             </p>
             <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full border"
               style={{ backgroundColor: "rgba(19,105,106,0.08)", borderColor: "rgba(19,105,106,0.2)" }}>
-              <span className="material-symbols-outlined text-[#13696a] text-sm"
+              <span className="material-symbols-outlined text-[#00B8A9] text-sm"
                 style={{ fontVariationSettings: "'FILL' 1" }}>psychology</span>
-              <span className="text-[#13696a] text-xs font-bold uppercase tracking-wider">IA Responsable</span>
+              <span className="text-[#00B8A9] text-xs font-bold uppercase tracking-wider">IA Responsable</span>
             </div>
 
             {/* Quick prompts */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full text-left">
               {QUICK_PROMPTS.map((p) => (
-                <button key={p.label} onClick={() => handleSend(p.label)} disabled={trial?.isExpired}
-                  className="p-4 bg-white rounded-2xl border border-[rgba(196,198,207,0.4)] hover:bg-[#f1f4f6] transition-all text-left group disabled:cursor-not-allowed disabled:opacity-50"
+                <button key={p.label} onClick={() => handleSend(p.label)}
+                  className="p-4 bg-white rounded-2xl border border-[rgba(196,198,207,0.4)] hover:bg-[#f1f4f6] transition-all text-left group"
                   style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-                  <span className="material-symbols-outlined text-[#13696a] mb-2 block">{p.icon}</span>
-                  <p className="text-sm font-semibold text-[#002045] group-hover:text-[#13696a]">{p.label}</p>
+                  <span className="material-symbols-outlined text-[#00B8A9] mb-2 block">{p.icon}</span>
+                  <p className="text-sm font-semibold text-[#003A7A] group-hover:text-[#00B8A9]">{p.label}</p>
                 </button>
               ))}
             </div>
@@ -217,7 +205,7 @@ export default function AsistentePage() {
           <div key={msg.id}>
             {msg.role === "user" ? (
               <div className="flex justify-end ml-12">
-                <div className="bg-[#002045] text-white px-5 py-3 rounded-2xl rounded-tr-sm"
+                <div className="bg-[#003A7A] text-white px-5 py-3 rounded-2xl rounded-tr-sm"
                   style={{ boxShadow: "0 4px 12px rgba(0,32,69,0.2)" }}>
                   <p className="text-sm leading-relaxed">{msg.text}</p>
                 </div>
@@ -225,9 +213,9 @@ export default function AsistentePage() {
             ) : (
               <div className="flex flex-col gap-2 mr-12">
                 <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#13696a] text-[18px]"
+                  <span className="material-symbols-outlined text-[#00B8A9] text-[18px]"
                     style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
-                  <span className="text-xs font-bold text-[#13696a] uppercase tracking-wider">Asistente IA</span>
+                  <span className="text-xs font-bold text-[#00B8A9] uppercase tracking-wider">Asistente IA</span>
                 </div>
 
                 {msg.error ? (
@@ -250,16 +238,16 @@ export default function AsistentePage() {
         {thinking && (
           <div className="flex flex-col gap-2 mr-12">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#13696a] text-[18px] animate-pulse"
+              <span className="material-symbols-outlined text-[#00B8A9] text-[18px] animate-pulse"
                 style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
-              <span className="text-xs font-bold text-[#13696a] uppercase tracking-wider">Analizando…</span>
+              <span className="text-xs font-bold text-[#00B8A9] uppercase tracking-wider">Analizando…</span>
             </div>
-            <div className="bg-white rounded-2xl rounded-tl-sm p-5 border-l-4 border-[#13696a]"
+            <div className="bg-white rounded-2xl rounded-tl-sm p-5 border-l-4 border-[#00B8A9]"
               style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
               <div className="flex items-center gap-3">
                 <div className="flex gap-1">
                   {[0, 1, 2].map((i) => (
-                    <div key={i} className="w-2 h-2 rounded-full bg-[#13696a] animate-bounce"
+                    <div key={i} className="w-2 h-2 rounded-full bg-[#00B8A9] animate-bounce"
                       style={{ animationDelay: `${i * 0.15}s` }} />
                   ))}
                 </div>
@@ -294,22 +282,21 @@ export default function AsistentePage() {
               onKeyDown={handleKeyDown}
               rows={1}
               placeholder="Escribe tu consulta de salud aquí…"
-              disabled={trial?.isExpired}
-              className="flex-1 border-none focus:ring-0 bg-transparent py-3 resize-none text-sm placeholder:text-[#74777f]/60 text-[#002045]"
+              className="flex-1 border-none focus:ring-0 bg-transparent py-3 resize-none text-sm placeholder:text-[#74777f]/60 text-[#003A7A]"
               style={{ outline: "none", maxHeight: "8rem", overflowY: "auto" }}
             />
             <button
               onClick={() => handleSend()}
-              disabled={thinking || !input.trim() || trial?.isExpired}
+              disabled={thinking || !input.trim()}
               className="p-3 rounded-xl text-white transition-all active:scale-95 disabled:opacity-50"
-              style={{ backgroundColor: "#002045" }}>
+              style={{ backgroundColor: "#003A7A" }}>
               {thinking
                 ? <span className="material-symbols-outlined animate-spin">progress_activity</span>
                 : <span className="material-symbols-outlined">send</span>}
             </button>
           </div>
           <p className="text-center text-[10px] text-[#74777f]/60 mt-2 hidden md:block">
-            AppMiSalud IA puede cometer errores. Verifica siempre la información médica crítica.
+            MiSalud FamilIA IA puede cometer errores. Verifica siempre la información médica crítica.
           </p>
         </div>
       </div>
@@ -329,7 +316,7 @@ function AIResponseCard({ data }: { data: NonNullable<ChatMessage["aiData"]> }) 
       data.disclaimer,
     ].join("\n");
     if (navigator.share) {
-      navigator.share({ title: "Resumen AppMiSalud", text });
+      navigator.share({ title: "Resumen MiSalud FamilIA", text });
     } else {
       navigator.clipboard.writeText(text);
       setShared(true);
@@ -338,7 +325,7 @@ function AIResponseCard({ data }: { data: NonNullable<ChatMessage["aiData"]> }) 
   }
 
   return (
-    <div className="bg-white rounded-2xl rounded-tl-sm p-6 border-l-4 border-[#13696a] space-y-5"
+    <div className="bg-white rounded-2xl rounded-tl-sm p-6 border-l-4 border-[#00B8A9] space-y-5"
       style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
 
       {/* Disclaimer */}
@@ -350,7 +337,7 @@ function AIResponseCard({ data }: { data: NonNullable<ChatMessage["aiData"]> }) 
 
       {/* Summary */}
       <section>
-        <h3 className="text-xs font-bold uppercase tracking-wider text-[#002045] flex items-center gap-2 mb-2">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[#003A7A] flex items-center gap-2 mb-2">
           <span className="material-symbols-outlined text-[16px]">description</span>
           Resumen
         </h3>
@@ -360,14 +347,14 @@ function AIResponseCard({ data }: { data: NonNullable<ChatMessage["aiData"]> }) 
       {/* Patterns */}
       {(data.patterns ?? []).length > 0 && (
         <section>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-[#002045] flex items-center gap-2 mb-2">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#003A7A] flex items-center gap-2 mb-2">
             <span className="material-symbols-outlined text-[16px]">trending_up</span>
             Patrones Observados
           </h3>
           <ul className="space-y-2">
             {(data.patterns ?? []).map((p, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-[#43474e]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#13696a] mt-2 shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00B8A9] mt-2 shrink-0" />
                 {p}
               </li>
             ))}
@@ -378,14 +365,14 @@ function AIResponseCard({ data }: { data: NonNullable<ChatMessage["aiData"]> }) 
       {/* Key findings (from explain endpoint) */}
       {(data.key_findings ?? []).length > 0 && (
         <section>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-[#002045] flex items-center gap-2 mb-2">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#003A7A] flex items-center gap-2 mb-2">
             <span className="material-symbols-outlined text-[16px]">search_insights</span>
             Hallazgos Clave
           </h3>
           <ul className="space-y-2">
             {(data.key_findings ?? []).map((f, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-[#43474e]">
-                <span className="material-symbols-outlined text-[#13696a] text-[16px] mt-0.5 shrink-0">check_circle</span>
+                <span className="material-symbols-outlined text-[#00B8A9] text-[16px] mt-0.5 shrink-0">check_circle</span>
                 {f}
               </li>
             ))}
@@ -415,7 +402,7 @@ function AIResponseCard({ data }: { data: NonNullable<ChatMessage["aiData"]> }) 
           Proveedor: {data.provider ?? "IA"}
         </p>
         <button onClick={handleShare}
-          className="flex items-center gap-2 text-sm font-semibold text-[#13696a] hover:underline">
+          className="flex items-center gap-2 text-sm font-semibold text-[#00B8A9] hover:underline">
           <span className="material-symbols-outlined text-[18px]">share</span>
           {shared ? "¡Copiado!" : "Compartir con Médico"}
         </button>

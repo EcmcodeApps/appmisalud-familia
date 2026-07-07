@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { registerUser, loginWithGoogle } from "@/lib/firebase/auth";
+import { ShieldLogo } from "@/components/ShieldLogo";
 
 type LoginDestination = {
   onboardingCompleted: boolean;
@@ -70,14 +71,7 @@ export default function RegisterPage() {
       {/* Header */}
       <header className="fixed top-0 w-full z-50 h-16 flex items-center justify-center px-4"
         style={{ backgroundColor: "rgba(247,250,252,0.8)", backdropFilter: "blur(12px)" }}>
-        <Link href="/" className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#002045] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-            shield_with_heart
-          </span>
-          <h1 className="font-bold text-xl text-[#002045]" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
-            AppMiSalud Familia
-          </h1>
-        </Link>
+        <Link href="/"><ShieldLogo size={22} /></Link>
       </header>
 
       <main className="min-h-screen pt-24 pb-12 px-4 flex flex-col items-center justify-center relative overflow-hidden">
@@ -92,7 +86,7 @@ export default function RegisterPage() {
           style={{ boxShadow: "0px 4px 20px rgba(26, 54, 93, 0.08)" }}>
 
           <div className="mb-6">
-            <h2 className="font-bold text-2xl text-[#002045] mb-1" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
+            <h2 className="font-bold text-2xl text-[#003A7A] mb-1" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
               Crear cuenta
             </h2>
             <p className="text-[#43474e] text-sm">Únete a la bóveda de salud de tu familia.</p>
@@ -105,7 +99,7 @@ export default function RegisterPage() {
             className="w-full h-12 flex items-center justify-center gap-3 border border-[#c4c6cf] rounded-xl bg-white hover:bg-[#f1f4f6] transition-all mb-4 font-semibold text-sm text-[#181c1e] disabled:opacity-60"
           >
             {googleLoading ? (
-              <span className="material-symbols-outlined animate-spin text-[#002045]">progress_activity</span>
+              <span className="material-symbols-outlined animate-spin text-[#003A7A]">progress_activity</span>
             ) : (
               <GoogleIcon />
             )}
@@ -136,7 +130,7 @@ export default function RegisterPage() {
                 value={form.fullName}
                 onChange={handleChange}
                 required
-                className="w-full pl-12 pr-4 py-3 bg-white border border-[#c4c6cf] rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#13696a] focus:border-[#13696a] text-sm"
+                className="w-full pl-12 pr-4 py-3 bg-white border border-[#c4c6cf] rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#00B8A9] focus:border-[#00B8A9] text-sm"
               />
             </Field>
 
@@ -148,13 +142,13 @@ export default function RegisterPage() {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full pl-12 pr-4 py-3 bg-white border border-[#c4c6cf] rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#13696a] focus:border-[#13696a] text-sm"
+                className="w-full pl-12 pr-4 py-3 bg-white border border-[#c4c6cf] rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#00B8A9] focus:border-[#00B8A9] text-sm"
               />
             </Field>
 
             {/* Contraseña */}
             <div className="flex flex-col gap-1">
-              <label htmlFor="password" className="text-xs font-semibold text-[#002045] tracking-wide">
+              <label htmlFor="password" className="text-xs font-semibold text-[#003A7A] tracking-wide">
                 Contraseña
               </label>
               <div className="relative">
@@ -166,12 +160,12 @@ export default function RegisterPage() {
                   value={form.password}
                   onChange={handleChange}
                   required
-                  className="w-full pl-12 pr-12 py-3 bg-white border border-[#c4c6cf] rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#13696a] focus:border-[#13696a] text-sm"
+                  className="w-full pl-12 pr-12 py-3 bg-white border border-[#c4c6cf] rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#00B8A9] focus:border-[#00B8A9] text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#c4c6cf] hover:text-[#002045] transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#c4c6cf] hover:text-[#003A7A] transition-colors"
                 >
                   <span className="material-symbols-outlined text-[20px]">
                     {showPassword ? "visibility_off" : "visibility"}
@@ -189,13 +183,13 @@ export default function RegisterPage() {
                 value={form.confirmPassword}
                 onChange={handleChange}
                 required
-                className="w-full pl-12 pr-4 py-3 bg-white border border-[#c4c6cf] rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#13696a] focus:border-[#13696a] text-sm"
+                className="w-full pl-12 pr-4 py-3 bg-white border border-[#c4c6cf] rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#00B8A9] focus:border-[#00B8A9] text-sm"
               />
             </Field>
 
             {/* Aviso seguridad */}
             <div className="bg-[#f1f4f6] p-3 rounded-xl flex gap-3 items-start">
-              <span className="material-symbols-outlined text-[#13696a] mt-0.5 text-[18px]">security</span>
+              <span className="material-symbols-outlined text-[#00B8A9] mt-0.5 text-[18px]">security</span>
               <p className="text-xs text-[#43474e]">
                 Usa una contraseña segura. Tu cuenta protegerá información médica sensible.
               </p>
@@ -207,13 +201,13 @@ export default function RegisterPage() {
                 id="terms" name="terms" type="checkbox"
                 checked={form.terms}
                 onChange={handleChange}
-                className="mt-0.5 h-5 w-5 rounded border-[#c4c6cf] text-[#13696a] cursor-pointer"
+                className="mt-0.5 h-5 w-5 rounded border-[#c4c6cf] text-[#00B8A9] cursor-pointer"
               />
               <label htmlFor="terms" className="text-xs text-[#43474e] cursor-pointer">
                 Acepto los{" "}
-                <a href="#" className="text-[#13696a] font-semibold hover:underline">Términos de Servicio</a>
+                <a href="#" className="text-[#00B8A9] font-semibold hover:underline">Términos de Servicio</a>
                 {" "}y la{" "}
-                <a href="#" className="text-[#13696a] font-semibold hover:underline">Política de Privacidad</a>.
+                <a href="#" className="text-[#00B8A9] font-semibold hover:underline">Política de Privacidad</a>.
               </label>
             </div>
 
@@ -221,7 +215,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading || googleLoading}
-              className="w-full h-12 bg-[#002045] text-white font-semibold text-sm rounded-xl flex items-center justify-center gap-2 hover:bg-[#1a365d] active:scale-[0.98] transition-all disabled:opacity-60"
+              className="w-full h-12 bg-[#003A7A] text-white font-semibold text-sm rounded-xl flex items-center justify-center gap-2 hover:bg-[#005EB8] active:scale-[0.98] transition-all disabled:opacity-60"
               style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}
             >
               {loading ? (
@@ -239,7 +233,7 @@ export default function RegisterPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-[#43474e]">
               ¿Ya tienes una cuenta?{" "}
-              <Link href="/login" className="text-[#13696a] font-bold hover:underline ml-1">
+              <Link href="/login" className="text-[#00B8A9] font-bold hover:underline ml-1">
                 Iniciar sesión
               </Link>
             </p>
@@ -254,9 +248,9 @@ export default function RegisterPage() {
             { icon: "family_restroom", label: "Entorno Familiar" },
           ].map((b) => (
             <div key={b.label}
-              className="flex items-center gap-1 px-4 py-2 rounded-full border text-xs font-semibold text-[#002045]"
+              className="flex items-center gap-1 px-4 py-2 rounded-full border text-xs font-semibold text-[#003A7A]"
               style={{ backgroundColor: "rgba(162,237,237,0.2)", borderColor: "rgba(19,105,106,0.1)" }}>
-              <span className="material-symbols-outlined text-[#13696a] text-[14px]"
+              <span className="material-symbols-outlined text-[#00B8A9] text-[14px]"
                 style={{ fontVariationSettings: "'FILL' 1" }}>{b.icon}</span>
               {b.label}
             </div>
@@ -265,7 +259,7 @@ export default function RegisterPage() {
 
         {/* Nota IA */}
         <div className="mt-4 flex items-center gap-2 opacity-60">
-          <span className="material-symbols-outlined text-[#13696a] text-[14px]">auto_awesome</span>
+          <span className="material-symbols-outlined text-[#00B8A9] text-[14px]">auto_awesome</span>
           <p className="text-xs text-[#43474e]">IA Responsable para el cuidado preventivo</p>
         </div>
       </main>
@@ -277,7 +271,7 @@ function Field({ label, icon, children }: { label: string; icon: string; childre
   const id = label.toLowerCase().replace(/ /g, "_");
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-xs font-semibold text-[#002045] tracking-wide">{label}</label>
+      <label htmlFor={id} className="text-xs font-semibold text-[#003A7A] tracking-wide">{label}</label>
       <div className="relative">
         <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#c4c6cf] text-[20px]">{icon}</span>
         {children}

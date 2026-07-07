@@ -161,7 +161,7 @@ export default function DetalleDocumentoPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <span className="material-symbols-outlined text-[#002045] text-5xl animate-pulse"
+        <span className="material-symbols-outlined text-[#003A7A] text-5xl animate-pulse"
           style={{ fontVariationSettings: "'FILL' 1" }}>shield_with_heart</span>
       </div>
     );
@@ -180,10 +180,10 @@ export default function DetalleDocumentoPage() {
         <div className="flex items-center gap-3 min-w-0">
           <button onClick={() => router.back()}
             className="p-2 rounded-full hover:bg-[#ebeef0] transition-colors shrink-0">
-            <span className="material-symbols-outlined text-[#002045]">arrow_back</span>
+            <span className="material-symbols-outlined text-[#003A7A]">arrow_back</span>
           </button>
           <div className="min-w-0">
-            <p className="font-bold text-base text-[#002045] truncate"
+            <p className="font-bold text-base text-[#003A7A] truncate"
               style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
               {doc_.docType}
             </p>
@@ -194,7 +194,7 @@ export default function DetalleDocumentoPage() {
         </div>
         <button onClick={handleShare}
           className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm text-white shrink-0"
-          style={{ backgroundColor: "#002045" }}>
+          style={{ backgroundColor: "#003A7A" }}>
           <span className="material-symbols-outlined text-[18px]">share</span>
           Compartir
         </button>
@@ -212,7 +212,7 @@ export default function DetalleDocumentoPage() {
             </span>
             {doc_.aiReady && (
               <span className="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
-                style={{ backgroundColor: "rgba(162,237,237,0.5)", color: "#1a6d6e" }}>
+                style={{ backgroundColor: "rgba(162,237,237,0.5)", color: "#00968A" }}>
                 <span className="material-symbols-outlined text-[14px]">verified</span>
                 Verificado
               </span>
@@ -244,15 +244,15 @@ export default function DetalleDocumentoPage() {
                   className="w-full h-full object-contain opacity-90" />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center gap-3">
-                  <span className="material-symbols-outlined text-[#13696a] text-6xl">description</span>
+                  <span className="material-symbols-outlined text-[#00B8A9] text-6xl">description</span>
                   <p className="text-sm text-[#43474e]">{doc_.fileName}</p>
                 </div>
               )}
 
               {/* Hover overlay */}
-              <div className="absolute inset-0 bg-[#002045]/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+              <div className="absolute inset-0 bg-[#003A7A]/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
                 <button onClick={() => window.open(doc_.downloadURL, "_blank")}
-                  className="bg-white text-[#002045] px-6 py-3 rounded-full font-bold flex items-center gap-2"
+                  className="bg-white text-[#003A7A] px-6 py-3 rounded-full font-bold flex items-center gap-2"
                   style={{ boxShadow: "0 8px 24px rgba(0,32,69,0.2)" }}>
                   <span className="material-symbols-outlined">zoom_in</span>
                   Ver Pantalla Completa
@@ -284,9 +284,9 @@ export default function DetalleDocumentoPage() {
             {/* Extracted data */}
             <div className="bg-white rounded-2xl p-6 border border-[rgba(196,198,207,0.3)]"
               style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-              <h3 className="font-bold text-xl text-[#002045] mb-4 flex items-center gap-2"
+              <h3 className="font-bold text-xl text-[#003A7A] mb-4 flex items-center gap-2"
                 style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
-                <span className="material-symbols-outlined text-[#13696a]">clinical_notes</span>
+                <span className="material-symbols-outlined text-[#00B8A9]">clinical_notes</span>
                 Datos Extraídos
               </h3>
               <div className="grid md:grid-cols-2 gap-6">
@@ -309,18 +309,18 @@ export default function DetalleDocumentoPage() {
             {/* AI Summary */}
             <div className="rounded-2xl p-6 relative overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, #133a4a 0%, #1a365d 100%)",
+                background: "linear-gradient(135deg, #133a4a 0%, #005EB8 100%)",
                 boxShadow: "0px 4px 20px rgba(26,54,93,0.08)",
               }}>
               <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full blur-2xl opacity-10"
-                style={{ backgroundColor: "#13696a" }} />
+                style={{ backgroundColor: "#00B8A9" }} />
               <div className="flex items-center justify-between mb-4 relative z-10">
                 <h3 className="font-bold text-xl text-white flex items-center gap-2"
                   style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
                   <span className="material-symbols-outlined">auto_awesome</span>
                   Resumen IA
                 </h3>
-                <span className="material-symbols-outlined text-[#a5eff0] cursor-help" title="La IA asiste en la interpretación, no sustituye el juicio médico.">info</span>
+                <span className="material-symbols-outlined text-[#A5EDE8] cursor-help" title="La IA asiste en la interpretación, no sustituye el juicio médico.">info</span>
               </div>
               {/* Estado de carga */}
               {aiLoading && (
@@ -347,7 +347,7 @@ export default function DetalleDocumentoPage() {
                       <ul className="space-y-1">
                         {findings.map((f, i) => (
                           <li key={i} className="flex items-start gap-2 text-xs text-white/80">
-                            <span className="material-symbols-outlined text-[#a5eff0] text-[14px] mt-0.5 shrink-0">check_circle</span>
+                            <span className="material-symbols-outlined text-[#A5EDE8] text-[14px] mt-0.5 shrink-0">check_circle</span>
                             {f}
                           </li>
                         ))}
@@ -378,9 +378,9 @@ export default function DetalleDocumentoPage() {
             </div>
 
             {/* Caregiver notes */}
-            <div className="bg-white rounded-2xl p-6 border-l-4 border-[#13696a] border border-[rgba(196,198,207,0.3)]"
+            <div className="bg-white rounded-2xl p-6 border-l-4 border-[#00B8A9] border border-[rgba(196,198,207,0.3)]"
               style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#002045] mb-4">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#003A7A] mb-4">
                 Notas del Gestor
               </h3>
               <div className="space-y-3">
@@ -401,10 +401,10 @@ export default function DetalleDocumentoPage() {
                   <textarea
                     value={newNote} onChange={(e) => setNewNote(e.target.value)}
                     rows={2}
-                    className="w-full p-3 text-sm border border-dashed border-[#c4c6cf] rounded-xl resize-none bg-[#f7fafc] focus:border-[#13696a] focus:outline-none"
+                    className="w-full p-3 text-sm border border-dashed border-[#c4c6cf] rounded-xl resize-none bg-[#f7fafc] focus:border-[#00B8A9] focus:outline-none"
                     placeholder="Añadir una nota…" />
                   <button onClick={handleAddNote} disabled={addingNote || !newNote.trim()}
-                    className="w-full py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 border-2 border-dashed border-[#c4c6cf] text-[#43474e] hover:border-[#13696a] hover:text-[#13696a] transition-colors disabled:opacity-40">
+                    className="w-full py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 border-2 border-dashed border-[#c4c6cf] text-[#43474e] hover:border-[#00B8A9] hover:text-[#00B8A9] transition-colors disabled:opacity-40">
                     {addingNote
                       ? <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
                       : <span className="material-symbols-outlined text-[18px]">add</span>}
@@ -418,18 +418,18 @@ export default function DetalleDocumentoPage() {
             {related.length > 0 && (
               <div className="bg-white rounded-2xl p-6 border border-[rgba(196,198,207,0.3)]"
                 style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#002045] mb-4">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#003A7A] mb-4">
                   Documentos Relacionados
                 </h3>
                 <div className="space-y-2">
                   {related.map((r) => (
                     <Link key={r.id} href={`/boveda/${r.id}`}
                       className="flex items-center gap-3 p-2 rounded-xl hover:bg-[#f1f4f6] transition-colors group">
-                      <div className="w-10 h-10 bg-[#ebeef0] rounded-lg flex items-center justify-center group-hover:bg-[#1a365d] transition-colors">
+                      <div className="w-10 h-10 bg-[#ebeef0] rounded-lg flex items-center justify-center group-hover:bg-[#005EB8] transition-colors">
                         <span className="material-symbols-outlined text-[#43474e] group-hover:text-white transition-colors">description</span>
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-[#002045]">{r.docType}</p>
+                        <p className="text-sm font-semibold text-[#003A7A]">{r.docType}</p>
                         <p className="text-xs text-[#43474e]">{formatDate(r.date)}</p>
                       </div>
                     </Link>
@@ -452,7 +452,7 @@ export default function DetalleDocumentoPage() {
             {/* Handle */}
             <div className="w-12 h-1.5 bg-[#c4c6cf] rounded-full mx-auto mb-5 md:hidden" />
             <div className="flex justify-between items-center mb-5">
-              <h2 className="font-bold text-xl text-[#002045]"
+              <h2 className="font-bold text-xl text-[#003A7A]"
                 style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
                 Compartir Documento
               </h2>
@@ -468,10 +468,10 @@ export default function DetalleDocumentoPage() {
                   <span className="material-symbols-outlined text-[#25D366] text-3xl">chat</span>
                 ), action: () => window.open(`https://wa.me/?text=${encodeURIComponent(doc_.downloadURL)}`) },
                 { label: "Email", bg: "rgba(0,32,69,0.08)", content: (
-                  <span className="material-symbols-outlined text-[#002045] text-3xl">mail</span>
+                  <span className="material-symbols-outlined text-[#003A7A] text-3xl">mail</span>
                 ), action: () => window.open(`mailto:?body=${encodeURIComponent(doc_.downloadURL)}`) },
                 { label: "Copiar link", bg: "rgba(19,105,106,0.08)", content: (
-                  <span className="material-symbols-outlined text-[#13696a] text-3xl">link</span>
+                  <span className="material-symbols-outlined text-[#00B8A9] text-3xl">link</span>
                 ), action: () => { navigator.clipboard.writeText(doc_.downloadURL); alert("Enlace copiado."); } },
                 { label: "Más", bg: "#ebeef0", content: (
                   <span className="material-symbols-outlined text-[#43474e] text-3xl">more_horiz</span>
@@ -490,8 +490,8 @@ export default function DetalleDocumentoPage() {
 
             <div className="flex items-center gap-3 p-3 rounded-xl border border-[rgba(19,105,106,0.2)]"
               style={{ backgroundColor: "rgba(162,237,237,0.1)" }}>
-              <span className="material-symbols-outlined text-[#13696a]">security</span>
-              <p className="text-xs text-[#13696a] font-medium">
+              <span className="material-symbols-outlined text-[#00B8A9]">security</span>
+              <p className="text-xs text-[#00B8A9] font-medium">
                 El archivo se compartirá como un enlace seguro con vencimiento en 24h.
               </p>
             </div>
@@ -514,11 +514,11 @@ function ActionBtn({ icon, label, onClick, teal, danger, disabled }: {
         boxShadow: "0px 4px 20px rgba(26,54,93,0.08)",
       }}>
       <span className="material-symbols-outlined group-hover:scale-110 transition-transform"
-        style={{ color: danger ? "#ba1a1a" : teal ? "#13696a" : "#002045" }}>
+        style={{ color: danger ? "#ba1a1a" : teal ? "#00B8A9" : "#003A7A" }}>
         {icon}
       </span>
       <span className="text-[11px] font-bold"
-        style={{ color: danger ? "#ba1a1a" : teal ? "#13696a" : "#002045" }}>
+        style={{ color: danger ? "#ba1a1a" : teal ? "#00B8A9" : "#003A7A" }}>
         {label}
       </span>
     </button>
@@ -529,7 +529,7 @@ function DataField({ label, value }: { label: string; value: string }) {
   return (
     <div className="space-y-1">
       <p className="text-xs font-bold uppercase tracking-widest text-[#43474e]">{label}</p>
-      <p className="font-semibold text-[#002045]">{value}</p>
+      <p className="font-semibold text-[#003A7A]">{value}</p>
     </div>
   );
 }

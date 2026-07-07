@@ -98,7 +98,7 @@ export default function PersonasPage() {
       {/* Encabezado */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
-          <h2 className="text-4xl font-bold text-[#002045] mb-1"
+          <h2 className="text-4xl font-bold text-[#003A7A] mb-1"
             style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
             Personas bajo mi cuidado
           </h2>
@@ -107,7 +107,7 @@ export default function PersonasPage() {
         <button
           onClick={openAdd}
           className="flex items-center gap-2 text-white px-6 py-3 rounded-xl font-semibold text-sm hover:opacity-90 active:scale-95 transition-all"
-          style={{ backgroundColor: "#002045", boxShadow: "0 4px 12px rgba(0,32,69,0.2)" }}>
+          style={{ backgroundColor: "#003A7A", boxShadow: "0 4px 12px rgba(0,32,69,0.2)" }}>
           <span className="material-symbols-outlined">person_add</span>
           Agregar persona
         </button>
@@ -115,7 +115,7 @@ export default function PersonasPage() {
 
       {/* Banner de privacidad */}
       <div className="p-4 rounded-2xl flex items-start gap-4 mb-8 border"
-        style={{ backgroundColor: "#1a365d", borderColor: "rgba(196,198,207,0.2)" }}>
+        style={{ backgroundColor: "#005EB8", borderColor: "rgba(196,198,207,0.2)" }}>
         <span className="material-symbols-outlined text-[#d6e3ff] shrink-0">info</span>
         <div className="flex-1">
           <p className="text-sm font-semibold text-[#d6e3ff]">Aviso de Privacidad y Autorización</p>
@@ -128,7 +128,7 @@ export default function PersonasPage() {
       {/* Grid de tarjetas */}
       {loading ? (
         <div className="flex justify-center py-20">
-          <span className="material-symbols-outlined text-[#002045] text-5xl animate-pulse">group</span>
+          <span className="material-symbols-outlined text-[#003A7A] text-5xl animate-pulse">group</span>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -145,13 +145,13 @@ export default function PersonasPage() {
           {/* Tarjeta "Añadir" */}
           <button
             onClick={openAdd}
-            className="bg-white rounded-2xl p-4 border-2 border-dashed border-[#c4c6cf] flex flex-col items-center justify-center gap-3 hover:border-[#13696a] transition-all group"
+            className="bg-white rounded-2xl p-4 border-2 border-dashed border-[#c4c6cf] flex flex-col items-center justify-center gap-3 hover:border-[#00B8A9] transition-all group"
             style={{ minHeight: 260 }}>
             <div className="w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform"
               style={{ backgroundColor: "#e5e9eb" }}>
               <span className="material-symbols-outlined text-[#43474e] text-3xl">add</span>
             </div>
-            <p className="text-sm font-semibold text-[#002045]">Añadir otro familiar</p>
+            <p className="text-sm font-semibold text-[#003A7A]">Añadir otro familiar</p>
             <p className="text-xs text-[#43474e] text-center">Hermanos, primos o cuidadores secundarios.</p>
           </button>
         </div>
@@ -164,7 +164,7 @@ export default function PersonasPage() {
           onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}>
           <div className="bg-white rounded-3xl p-6 w-full max-w-md"
             style={{ boxShadow: "0 24px 48px rgba(0,32,69,0.2)" }}>
-            <h3 className="text-xl font-bold text-[#002045] mb-4"
+            <h3 className="text-xl font-bold text-[#003A7A] mb-4"
               style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
               {editing ? "Editar persona" : "Agregar persona"}
             </h3>
@@ -172,12 +172,12 @@ export default function PersonasPage() {
               <Field label="Nombre completo">
                 <input required value={form.name} onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
                   placeholder="Ej. María González"
-                  className="w-full px-4 py-2.5 border border-[#c4c6cf] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#13696a] focus:border-[#13696a]" />
+                  className="w-full px-4 py-2.5 border border-[#c4c6cf] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#00B8A9] focus:border-[#00B8A9]" />
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Parentesco">
                   <select value={form.role} onChange={(e) => setForm(f => ({ ...f, role: e.target.value }))}
-                    className="w-full px-4 py-2.5 border border-[#c4c6cf] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#13696a] bg-white">
+                    className="w-full px-4 py-2.5 border border-[#c4c6cf] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#00B8A9] bg-white">
                     {ROLES.map(r => <option key={r}>{r}</option>)}
                   </select>
                 </Field>
@@ -185,28 +185,28 @@ export default function PersonasPage() {
                   <input type="number" required min={1900} max={new Date().getFullYear()}
                     value={form.birthYear}
                     onChange={(e) => setForm(f => ({ ...f, birthYear: Number(e.target.value) }))}
-                    className="w-full px-4 py-2.5 border border-[#c4c6cf] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#13696a]" />
+                    className="w-full px-4 py-2.5 border border-[#c4c6cf] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#00B8A9]" />
                 </Field>
               </div>
               <Field label="Sexo biológico">
                 <select value={form.sex} onChange={(e) => setForm(f => ({ ...f, sex: e.target.value }))}
-                  className="w-full px-4 py-2.5 border border-[#c4c6cf] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#13696a] bg-white">
+                  className="w-full px-4 py-2.5 border border-[#c4c6cf] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#00B8A9] bg-white">
                   {SEXES.map(s => <option key={s}>{s}</option>)}
                 </select>
               </Field>
               <Field label="Último documento (opcional)">
                 <input value={form.lastDocument} onChange={(e) => setForm(f => ({ ...f, lastDocument: e.target.value }))}
                   placeholder="Ej. Análisis de sangre"
-                  className="w-full px-4 py-2.5 border border-[#c4c6cf] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#13696a]" />
+                  className="w-full px-4 py-2.5 border border-[#c4c6cf] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#00B8A9]" />
               </Field>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)}
-                  className="flex-1 h-11 rounded-full border-2 border-[#13696a] text-[#13696a] font-semibold text-sm hover:bg-[rgba(19,105,106,0.05)] transition-colors">
+                  className="flex-1 h-11 rounded-full border-2 border-[#00B8A9] text-[#00B8A9] font-semibold text-sm hover:bg-[rgba(19,105,106,0.05)] transition-colors">
                   Cancelar
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 h-11 rounded-full text-white font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-60 transition-all"
-                  style={{ backgroundColor: "#002045" }}>
+                  style={{ backgroundColor: "#003A7A" }}>
                   {saving ? <span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> : (editing ? "Guardar cambios" : "Agregar")}
                 </button>
               </div>
@@ -222,7 +222,7 @@ export default function PersonasPage() {
           <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center"
             style={{ boxShadow: "0 24px 48px rgba(0,32,69,0.2)" }}>
             <span className="material-symbols-outlined text-[#ba1a1a] text-5xl mb-3 block">person_remove</span>
-            <h3 className="text-lg font-bold text-[#002045] mb-2">¿Eliminar a {confirmDelete.name}?</h3>
+            <h3 className="text-lg font-bold text-[#003A7A] mb-2">¿Eliminar a {confirmDelete.name}?</h3>
             <p className="text-sm text-[#43474e] mb-6">Se eliminarán su perfil y referencias. Los documentos subidos permanecerán.</p>
             <div className="flex gap-3">
               <button onClick={() => setConfirmDelete(null)}
@@ -247,7 +247,7 @@ function PersonaCard({ persona: p, age, onEdit, onDelete }: { persona: Persona; 
   const alertOk = p.alertStatus === "ok";
 
   return (
-    <div className="bg-white rounded-2xl p-4 border border-[rgba(196,198,207,0.1)] flex flex-col group hover:border-[#13696a] transition-all"
+    <div className="bg-white rounded-2xl p-4 border border-[rgba(196,198,207,0.1)] flex flex-col group hover:border-[#00B8A9] transition-all"
       style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
 
       {/* Avatar + acciones */}
@@ -258,13 +258,13 @@ function PersonaCard({ persona: p, age, onEdit, onDelete }: { persona: Persona; 
               className="w-16 h-16 rounded-full object-cover" />
           ) : (
             <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold"
-              style={{ backgroundColor: "#002045" }}>
+              style={{ backgroundColor: "#003A7A" }}>
               {p.name[0]}
             </div>
           )}
           {p.isOwner && (
             <div className="absolute -bottom-1 -right-1 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-              style={{ backgroundColor: "#13696a" }}>YO</div>
+              style={{ backgroundColor: "#00B8A9" }}>YO</div>
           )}
         </div>
         <div className="flex gap-1">
@@ -283,7 +283,7 @@ function PersonaCard({ persona: p, age, onEdit, onDelete }: { persona: Persona; 
 
       {/* Info */}
       <div className="mb-4">
-        <h3 className="text-lg font-bold text-[#002045]"
+        <h3 className="text-lg font-bold text-[#003A7A]"
           style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>{p.name}</h3>
         <p className="text-xs text-[#43474e]">{age} años • {p.role}</p>
       </div>
@@ -292,11 +292,11 @@ function PersonaCard({ persona: p, age, onEdit, onDelete }: { persona: Persona; 
       <div className="space-y-2 mb-6 flex-1">
         <div className="flex justify-between text-xs border-b border-[#c4c6cf] pb-2">
           <span className="text-[#43474e]">Último documento</span>
-          <span className="font-semibold text-[#002045] truncate ml-2">{p.lastDocument || "—"}</span>
+          <span className="font-semibold text-[#003A7A] truncate ml-2">{p.lastDocument || "—"}</span>
         </div>
         <div className="flex justify-between text-xs">
           <span className="text-[#43474e]">Alertas</span>
-          <span className={`flex items-center gap-1 font-bold ${alertOk ? "text-[#13696a]" : "text-[#ba1a1a]"}`}>
+          <span className={`flex items-center gap-1 font-bold ${alertOk ? "text-[#00B8A9]" : "text-[#ba1a1a]"}`}>
             <span className="material-symbols-outlined text-[14px]">{alertOk ? "check_circle" : "warning"}</span>
             {alertOk ? "Al día" : (p.alertLabel || "Pendiente")}
           </span>
@@ -311,11 +311,11 @@ function PersonaCard({ persona: p, age, onEdit, onDelete }: { persona: Persona; 
           Emergencia
         </button>
         <Link href={`/personas/${p.id}`}
-          className="py-2 rounded-lg text-[#002045] text-xs font-semibold hover:bg-[#e5e9eb] transition-colors text-center"
+          className="py-2 rounded-lg text-[#003A7A] text-xs font-semibold hover:bg-[#e5e9eb] transition-colors text-center"
           style={{ backgroundColor: "#f1f4f6" }}>
           Historial
         </Link>
-        <button className="py-2 rounded-lg text-[#002045] text-xs font-semibold hover:bg-[#e5e9eb] transition-colors"
+        <button className="py-2 rounded-lg text-[#003A7A] text-xs font-semibold hover:bg-[#e5e9eb] transition-colors"
           style={{ backgroundColor: "#f1f4f6" }}>
           Permisos
         </button>
@@ -327,7 +327,7 @@ function PersonaCard({ persona: p, age, onEdit, onDelete }: { persona: Persona; 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-semibold text-[#002045] tracking-wide">{label}</label>
+      <label className="text-xs font-semibold text-[#003A7A] tracking-wide">{label}</label>
       {children}
     </div>
   );

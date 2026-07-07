@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="AppMiSalud Familia API",
+    title="MiSalud FamilIA API",
     version="0.1.0",
     docs_url="/docs" if True else None,  # desactivar en producción
     lifespan=lifespan,

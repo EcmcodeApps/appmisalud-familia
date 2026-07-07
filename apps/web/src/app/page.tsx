@@ -31,7 +31,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="font-[Inter] text-[#181c1e] selection:bg-[#a2eded]">
+    <div className="font-[Inter] text-[#181c1e] selection:bg-[#B3EDE8]">
       <Header />
       <main className="pt-16 overflow-hidden">
         <HeroSection />
@@ -56,19 +56,19 @@ function Header() {
   return (
     <header className="fixed top-0 w-full z-50 glass-header shadow-sm h-16 flex justify-between items-center px-4 md:px-12">
       <div className="flex items-center gap-2">
-        <span className="material-symbols-outlined text-[#002045] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+        <span className="material-symbols-outlined text-[#003A7A] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
           shield_with_heart
         </span>
-        <h1 className="font-bold text-[#002045] text-lg md:text-xl font-[Atkinson_Hyperlegible_Next]">
-          AppMiSalud Familia
+        <h1 className="font-bold text-[#003A7A] text-lg md:text-xl font-[Atkinson_Hyperlegible_Next]">
+          MiSalud FamilIA
         </h1>
       </div>
       <nav className="hidden md:flex gap-8 items-center">
-        <a className="text-sm text-[#42474e] hover:text-[#002045] transition-colors" href="#solucion">Solución</a>
-        <a className="text-sm text-[#42474e] hover:text-[#002045] transition-colors" href="#seguridad">Seguridad</a>
+        <a className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="#solucion">Solución</a>
+        <a className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="#seguridad">Seguridad</a>
         <Link
           href="/register"
-          className="bg-[#002045] text-white px-6 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
+          className="bg-[#003A7A] text-white px-6 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
         >
           Crear mi cuenta
         </Link>
@@ -130,11 +130,11 @@ function HeroSection() {
     <section className="relative min-h-[751px] flex items-center pt-12 pb-24 px-4 md:px-12">
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div data-reveal className="z-10 order-2 md:order-1">
-          <span className="inline-flex items-center gap-2 bg-[#a2eded] text-[#1a6d6e] px-4 py-1.5 rounded-full text-xs font-medium mb-6">
+          <span className="inline-flex items-center gap-2 bg-[#B3EDE8] text-[#00968A] px-4 py-1.5 rounded-full text-xs font-medium mb-6">
             <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
             Bóveda Médica Segura
           </span>
-          <h2 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#002045] text-4xl md:text-6xl leading-[1.1] mb-6">
+          <h2 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#003A7A] text-4xl md:text-6xl leading-[1.1] mb-6">
             Tu bóveda médica familiar, organizada y segura.
           </h2>
           <p className="text-[#42474e] mb-10 max-w-lg text-lg">
@@ -143,14 +143,14 @@ function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/register"
-              className="bg-[#002045] text-white h-14 px-8 rounded-xl font-medium flex items-center justify-center gap-2 hover:shadow-lg transition-all active:scale-[0.98]"
+              className="bg-[#003A7A] text-white h-14 px-8 rounded-xl font-medium flex items-center justify-center gap-2 hover:shadow-lg transition-all active:scale-[0.98]"
             >
               Crear mi cuenta
               <span className="material-symbols-outlined">arrow_forward</span>
             </Link>
             <a
               href="#solucion"
-              className="border-[1.5px] border-[#13696a] text-[#13696a] h-14 px-8 rounded-xl font-medium flex items-center justify-center hover:bg-[#a2eded]/20 transition-all"
+              className="border-[1.5px] border-[#00B8A9] text-[#00B8A9] h-14 px-8 rounded-xl font-medium flex items-center justify-center hover:bg-[#B3EDE8]/20 transition-all"
             >
               Ver cómo funciona
             </a>
@@ -169,7 +169,7 @@ function HeroSection() {
         </div>
 
         <div data-reveal className="order-1 md:order-2 relative h-full">
-          <div className="absolute -top-10 -right-10 w-64 h-64 bg-[#a2eded] rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none" />
+          <div className="absolute -top-10 -right-10 w-64 h-64 bg-[#B3EDE8] rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none" />
           <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-[#c3e8fd] rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none" />
           <div className="relative rounded-3xl overflow-hidden medical-vault-shadow border border-white/40">
             <Image
@@ -181,13 +181,13 @@ function HeroSection() {
               priority
             />
             <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-md p-4 rounded-2xl flex items-center gap-4 border border-white">
-              <div className="bg-[#a2eded] p-2 rounded-full">
-                <span className="material-symbols-outlined text-[#13696a]" style={{ fontVariationSettings: "'FILL' 1" }}>
+              <div className="bg-[#B3EDE8] p-2 rounded-full">
+                <span className="material-symbols-outlined text-[#00B8A9]" style={{ fontVariationSettings: "'FILL' 1" }}>
                   folder_managed
                 </span>
               </div>
               <div>
-                <p className="font-medium text-[#002045] text-sm">Historial Actualizado</p>
+                <p className="font-medium text-[#003A7A] text-sm">Historial Actualizado</p>
                 <p className="text-xs text-[#42474e]">Último reporte cargado hace 5 min</p>
               </div>
             </div>
@@ -220,7 +220,7 @@ function ProblemSection() {
   return (
     <section className="py-24 bg-[#f1f4f6] px-4 md:px-12">
       <div data-reveal className="max-w-4xl mx-auto text-center mb-16">
-        <h3 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#002045] text-3xl md:text-4xl mb-4">
+        <h3 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#003A7A] text-3xl md:text-4xl mb-4">
           ¿Papeles perdidos y carpetas infinitas?
         </h3>
         <p className="text-[#42474e] text-lg">
@@ -231,7 +231,7 @@ function ProblemSection() {
         {problems.map((p) => (
           <div key={p.title} data-reveal className="bg-white p-8 rounded-2xl medical-vault-shadow border-b-4 border-[#ffdad6]">
             <span className="material-symbols-outlined text-[#ba1a1a] text-4xl mb-4 block">{p.icon}</span>
-            <h4 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#002045] text-xl mb-3">{p.title}</h4>
+            <h4 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#003A7A] text-xl mb-3">{p.title}</h4>
             <p className="text-[#42474e]">{p.desc}</p>
           </div>
         ))}
@@ -246,14 +246,14 @@ function SolutionSection() {
       <div className="max-w-7xl mx-auto">
         <div data-reveal className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="max-w-2xl">
-            <h3 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#002045] text-3xl md:text-4xl mb-4">
+            <h3 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#003A7A] text-3xl md:text-4xl mb-4">
               Una solución organizada por personas.
             </h3>
             <p className="text-[#42474e] text-lg">
               Centraliza toda la vida médica de tu familia en perfiles individuales protegidos.
             </p>
           </div>
-          <div className="flex items-center gap-2 bg-[#1a365d] text-[#86a0cd] px-6 py-3 rounded-2xl border border-[#002045]/20">
+          <div className="flex items-center gap-2 bg-[#005EB8] text-[#86a0cd] px-6 py-3 rounded-2xl border border-[#003A7A]/20">
             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
             <span className="text-sm font-medium">IA Responsable: Análisis preventivo</span>
           </div>
@@ -263,7 +263,7 @@ function SolutionSection() {
           {/* Tarjeta principal */}
           <div data-reveal className="md:col-span-7 bg-white rounded-3xl medical-vault-shadow p-8 flex flex-col justify-between border border-[#c4c6cf]/30 overflow-hidden relative">
             <div className="relative z-10">
-              <h4 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#002045] text-2xl mb-4">
+              <h4 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#003A7A] text-2xl mb-4">
                 Perfiles Familiares Dinámicos
               </h4>
               <p className="text-[#42474e] mb-8 max-w-sm">
@@ -273,8 +273,8 @@ function SolutionSection() {
                 {["M", "J", "A"].map((letter, i) => (
                   <div
                     key={letter}
-                    className="w-14 h-14 rounded-full border-4 border-white flex items-center justify-center font-bold text-[#002045]"
-                    style={{ backgroundColor: ["#a5eff0", "#c3e8fd", "#d6e3ff"][i] }}
+                    className="w-14 h-14 rounded-full border-4 border-white flex items-center justify-center font-bold text-[#003A7A]"
+                    style={{ backgroundColor: ["#A5EDE8", "#c3e8fd", "#d6e3ff"][i] }}
                   >
                     {letter}
                   </div>
@@ -295,11 +295,11 @@ function SolutionSection() {
 
           {/* Columna derecha */}
           <div className="md:col-span-5 grid grid-rows-2 gap-6">
-            <div data-reveal className="bg-[#a2eded]/30 rounded-3xl p-8 border border-[#13696a]/10">
-              <span className="material-symbols-outlined text-[#13696a] text-4xl mb-4 block">analytics</span>
-              <h4 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#002045] text-xl mb-2">Compara Evoluciones</h4>
+            <div data-reveal className="bg-[#B3EDE8]/30 rounded-3xl p-8 border border-[#00B8A9]/10">
+              <span className="material-symbols-outlined text-[#00B8A9] text-4xl mb-4 block">analytics</span>
+              <h4 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#003A7A] text-xl mb-2">Compara Evoluciones</h4>
               <p className="text-[#42474e]">
-                Observa gráficos automáticos de laboratorios. ¿El colesterol bajó desde la última vez? AppMiSalud te lo dice.
+                Observa gráficos automáticos de laboratorios. ¿El colesterol bajó desde la última vez? MiSalud FamilIA te lo dice.
               </p>
             </div>
             <div data-reveal className="bg-[#002432] text-white rounded-3xl p-8 relative overflow-hidden">
@@ -327,17 +327,17 @@ function HowItWorksSection() {
   return (
     <section className="py-24 bg-[#f7fafc] px-4 md:px-12">
       <div className="max-w-7xl mx-auto">
-        <h3 data-reveal className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#002045] text-3xl md:text-4xl text-center mb-16">
+        <h3 data-reveal className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#003A7A] text-3xl md:text-4xl text-center mb-16">
           El camino a la tranquilidad
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative">
           <div className="hidden md:block absolute top-12 left-0 w-full h-[1.5px] bg-[#c4c6cf] -z-10" />
           {steps.map((s) => (
             <div key={s.label} data-reveal className="flex flex-col items-center text-center group">
-              <div className="w-24 h-24 rounded-full bg-white medical-vault-shadow flex items-center justify-center mb-6 border-2 border-transparent group-hover:border-[#13696a] transition-all">
-                <span className="material-symbols-outlined text-[#002045] text-4xl">{s.icon}</span>
+              <div className="w-24 h-24 rounded-full bg-white medical-vault-shadow flex items-center justify-center mb-6 border-2 border-transparent group-hover:border-[#00B8A9] transition-all">
+                <span className="material-symbols-outlined text-[#003A7A] text-4xl">{s.icon}</span>
               </div>
-              <p className="font-semibold text-[#002045] mb-2">{s.label}</p>
+              <p className="font-semibold text-[#003A7A] mb-2">{s.label}</p>
               <p className="text-[#42474e] text-sm">{s.desc}</p>
             </div>
           ))}
@@ -350,7 +350,7 @@ function HowItWorksSection() {
 function CaregiverSection() {
   return (
     <section className="py-24 px-4 md:px-12 overflow-hidden">
-      <div className="max-w-7xl mx-auto bg-[#1a365d] rounded-[2rem] p-12 md:p-24 relative">
+      <div className="max-w-7xl mx-auto bg-[#005EB8] rounded-[2rem] p-12 md:p-24 relative">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div data-reveal className="z-10">
             <h3 className="font-[Atkinson_Hyperlegible_Next] font-bold text-white text-3xl md:text-4xl mb-6">
@@ -367,14 +367,14 @@ function CaregiverSection() {
                 "Comparte el progreso con otros familiares.",
               ].map((item) => (
                 <li key={item} className="flex items-center gap-4 text-white">
-                  <span className="material-symbols-outlined text-[#a5eff0]">check_circle</span>
+                  <span className="material-symbols-outlined text-[#A5EDE8]">check_circle</span>
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
             <Link
               href="/register"
-              className="inline-flex items-center justify-center bg-[#a5eff0] text-[#002020] h-14 px-8 rounded-xl font-semibold hover:shadow-lg transition-all"
+              className="inline-flex items-center justify-center bg-[#A5EDE8] text-[#002020] h-14 px-8 rounded-xl font-semibold hover:shadow-lg transition-all"
             >
               Empezar hoy mismo
             </Link>
@@ -389,7 +389,7 @@ function CaregiverSection() {
               className="rounded-3xl medical-vault-shadow w-full h-[400px] object-cover"
             />
             <div className="absolute -top-6 -right-6 bg-white p-6 rounded-2xl shadow-xl border border-[#c4c6cf] max-w-[200px]">
-              <p className="text-xs font-semibold text-[#002045] uppercase tracking-wider mb-2">Confianza</p>
+              <p className="text-xs font-semibold text-[#003A7A] uppercase tracking-wider mb-2">Confianza</p>
               <p className="text-sm text-[#42474e] italic">
                 &quot;Ahora sé que si algo pasa, toda la información está a un clic.&quot;
               </p>
@@ -418,8 +418,8 @@ function SecuritySection() {
   return (
     <section className="py-24 bg-[#f1f4f6] px-4 md:px-12" id="seguridad">
       <div className="max-w-7xl mx-auto text-center">
-        <span data-reveal className="material-symbols-outlined text-[#002045] text-6xl mb-6 block">verified_user</span>
-        <h3 data-reveal className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#002045] text-3xl md:text-4xl mb-6">
+        <span data-reveal className="material-symbols-outlined text-[#003A7A] text-6xl mb-6 block">verified_user</span>
+        <h3 data-reveal className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#003A7A] text-3xl md:text-4xl mb-6">
           Tu privacidad es nuestra prioridad absoluta.
         </h3>
         <p data-reveal className="text-[#42474e] text-lg max-w-3xl mx-auto mb-16">
@@ -428,10 +428,10 @@ function SecuritySection() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {items.map((item) => (
             <div key={item.label} data-reveal className="p-6 bg-white rounded-2xl border border-[#c4c6cf]/30 flex flex-col items-center">
-              <div className="w-12 h-12 bg-[#1a365d]/10 rounded-full flex items-center justify-center mb-4">
-                <span className="material-symbols-outlined text-[#002045]">{item.icon}</span>
+              <div className="w-12 h-12 bg-[#005EB8]/10 rounded-full flex items-center justify-center mb-4">
+                <span className="material-symbols-outlined text-[#003A7A]">{item.icon}</span>
               </div>
-              <p className="font-semibold text-[#002045] text-sm text-center">{item.label}</p>
+              <p className="font-semibold text-[#003A7A] text-sm text-center">{item.label}</p>
             </div>
           ))}
         </div>
@@ -451,8 +451,8 @@ function SecuritySection() {
 function CtaSection() {
   return (
     <section className="py-24 px-4 md:px-12 text-center">
-      <div data-reveal className="max-w-4xl mx-auto bg-gradient-to-br from-[#f7fafc] to-[#a2eded]/20 p-12 md:p-24 rounded-[3rem] border border-[#13696a]/10">
-        <h3 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#002045] text-4xl md:text-5xl mb-6">
+      <div data-reveal className="max-w-4xl mx-auto bg-gradient-to-br from-[#f7fafc] to-[#B3EDE8]/20 p-12 md:p-24 rounded-[3rem] border border-[#00B8A9]/10">
+        <h3 className="font-[Atkinson_Hyperlegible_Next] font-bold text-[#003A7A] text-4xl md:text-5xl mb-6">
           ¿Listo para organizar el cuidado de tu familia?
         </h3>
         <p className="text-[#42474e] text-lg mb-12">
@@ -461,11 +461,11 @@ function CtaSection() {
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link
             href="/register"
-            className="bg-[#002045] text-white h-16 px-12 rounded-2xl font-semibold text-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center"
+            className="bg-[#003A7A] text-white h-16 px-12 rounded-2xl font-semibold text-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center"
           >
             Empezar Gratis
           </Link>
-          <button className="bg-white text-[#002045] h-16 px-12 rounded-2xl font-semibold text-lg border border-[#c4c6cf] medical-vault-shadow hover:bg-[#f1f4f6] transition-all flex items-center justify-center">
+          <button className="bg-white text-[#003A7A] h-16 px-12 rounded-2xl font-semibold text-lg border border-[#c4c6cf] medical-vault-shadow hover:bg-[#f1f4f6] transition-all flex items-center justify-center">
             Hablar con Soporte
           </button>
         </div>
@@ -476,14 +476,14 @@ function CtaSection() {
 
 function Footer() {
   return (
-    <footer className="bg-[#002045] text-white py-16 px-4 md:px-12">
+    <footer className="bg-[#003A7A] text-white py-16 px-4 md:px-12">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="md:col-span-1">
           <div className="flex items-center gap-2 mb-6">
-            <span className="material-symbols-outlined text-[#a5eff0] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-outlined text-[#A5EDE8] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
               shield_with_heart
             </span>
-            <h2 className="font-bold text-xl">AppMiSalud Familia</h2>
+            <h2 className="font-bold text-xl">MiSalud FamilIA</h2>
           </div>
           <p className="text-sm opacity-70 leading-relaxed">
             La plataforma digital líder para la gestión y protección de la información médica familiar.
@@ -515,7 +515,7 @@ function Footer() {
         </div>
       </div>
       <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50">
-        <p>© 2026 AppMiSalud Familia. Todos los derechos reservados.</p>
+        <p>© 2026 MiSalud FamilIA. Todos los derechos reservados.</p>
         <div className="flex gap-6">
           {["Twitter", "LinkedIn", "Instagram"].map((s) => (
             <a key={s} href="#">{s}</a>
@@ -539,7 +539,7 @@ function MobileNav() {
       {items.map((item) => (
         <div
           key={item.label}
-          className={`flex flex-col items-center ${item.active ? "text-[#002045]" : "text-[#42474e] opacity-60"}`}
+          className={`flex flex-col items-center ${item.active ? "text-[#003A7A]" : "text-[#42474e] opacity-60"}`}
         >
           <span
             className="material-symbols-outlined"
@@ -559,7 +559,7 @@ function MobileFab() {
     <div className="fixed bottom-20 right-6 md:hidden z-50">
       <Link
         href="/register"
-        className="bg-[#13696a] text-white w-16 h-16 rounded-full medical-vault-shadow flex items-center justify-center active:scale-90 transition-transform"
+        className="bg-[#00B8A9] text-white w-16 h-16 rounded-full medical-vault-shadow flex items-center justify-center active:scale-90 transition-transform"
         aria-label="Crear cuenta"
       >
         <span className="material-symbols-outlined text-3xl">add</span>

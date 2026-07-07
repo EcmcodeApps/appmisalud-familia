@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { onAuthChange, logoutUser } from "@/lib/firebase/auth";
 import type { User } from "firebase/auth";
+import { ShieldLogo } from "@/components/ShieldLogo";
 
 // desktop: todos los ítems; mobile: solo los 5 del bottom bar
 const NAV_ITEMS_DESKTOP = [
@@ -48,7 +49,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#f7fafc" }}>
         <div className="flex flex-col items-center gap-4">
-          <span className="material-symbols-outlined text-[#002045] text-5xl animate-pulse"
+          <span className="material-symbols-outlined text-[#003A7A] text-5xl animate-pulse"
             style={{ fontVariationSettings: "'FILL' 1" }}>shield_with_heart</span>
           <p className="text-sm text-[#43474e]">Verificando sesión…</p>
         </div>
@@ -63,28 +64,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       {/* ── HEADER ── */}
       <header className="fixed top-0 w-full z-50 h-16 flex justify-between items-center px-4 md:px-12"
         style={{ backgroundColor: "rgba(247,250,252,0.85)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(196,198,207,0.3)", boxShadow: "0 1px 4px rgba(26,54,93,0.06)" }}>
-        <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#002045] text-2xl"
-            style={{ fontVariationSettings: "'FILL' 1" }}>shield_with_heart</span>
-          <span className="font-bold text-lg text-[#002045]"
-            style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
-            AppMiSalud Familia
-          </span>
-        </div>
+        <ShieldLogo size={28} />
         <div className="flex items-center gap-3">
           <button className="material-symbols-outlined text-[#43474e] p-2 hover:bg-[#ebeef0] rounded-full transition-colors">
             search
           </button>
           <button
             onClick={async () => { await logoutUser(); router.replace("/login"); }}
-            className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#d6e3ff] hover:border-[#002045] transition-colors cursor-pointer"
+            className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#d6e3ff] hover:border-[#003A7A] transition-colors cursor-pointer"
             title="Cerrar sesión"
           >
             {user.photoURL ? (
               <Image src={user.photoURL} alt="Perfil" width={40} height={40} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white font-bold text-sm"
-                style={{ backgroundColor: "#002045" }}>
+                style={{ backgroundColor: "#003A7A" }}>
                 {(user.displayName || user.email || "U")[0].toUpperCase()}
               </div>
             )}
@@ -104,13 +98,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <Image src={user.photoURL} alt="Perfil" width={40} height={40} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white font-bold text-sm"
-                style={{ backgroundColor: "#002045" }}>
+                style={{ backgroundColor: "#003A7A" }}>
                 {(user.displayName || user.email || "U")[0].toUpperCase()}
               </div>
             )}
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-[#002045] truncate">
+            <p className="text-sm font-semibold text-[#003A7A] truncate">
               {user.displayName || "Mi cuenta"}
             </p>
             <p className="text-xs text-[#43474e] truncate">{user.email}</p>
@@ -124,15 +118,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <Link key={item.href} href={item.href}
               className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-semibold text-sm"
               style={{
-                backgroundColor: active ? "rgba(162,237,237,0.3)" : "transparent",
-                color: active ? "#002045" : "#43474e",
+                backgroundColor: active ? "rgba(0,184,169,0.12)" : "transparent",
+                color: active ? "#003A7A" : "#43474e",
+                borderLeft: active ? "3px solid #00B8A9" : "3px solid transparent",
               }}>
               <span className="material-symbols-outlined text-[22px]"
-                style={{ fontVariationSettings: active ? "'FILL' 1" : "'FILL' 0" }}>
+                style={{
+                  fontVariationSettings: active ? "'FILL' 1" : "'FILL' 0",
+                  color: active ? "#00B8A9" : "inherit",
+                }}>
                 {item.icon}
               </span>
               {item.label}
-              {active && <div className="ml-auto w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#13696a" }} />}
             </Link>
           );
         })}
@@ -164,7 +161,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 className="flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-full transition-all active:scale-95"
                 style={{
                   backgroundColor: active ? "rgba(162,237,237,0.3)" : "transparent",
-                  color: active ? "#002045" : "#74777f",
+                  color: active ? "#003A7A" : "#74777f",
                 }}>
                 <span className="material-symbols-outlined text-[24px]"
                   style={{ fontVariationSettings: active ? "'FILL' 1" : "'FILL' 0" }}>

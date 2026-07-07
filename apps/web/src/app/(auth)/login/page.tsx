@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { loginUser, loginWithGoogle } from "@/lib/firebase/auth";
+import { ShieldLogo, ShieldIcon } from "@/components/ShieldLogo";
 
 type LoginDestination = {
   onboardingCompleted: boolean;
@@ -57,7 +58,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center relative px-4 md:px-0 selection:bg-[#a2eded]"
+    <main className="min-h-screen flex flex-col items-center justify-center relative px-4 md:px-0 selection:bg-[#B3EDE8]"
       style={{ backgroundColor: "#f7fafc" }}>
 
       {/* Fondo gradiente */}
@@ -83,18 +84,9 @@ export default function LoginPage() {
       <div className="w-full max-w-[440px] flex flex-col space-y-6">
 
         {/* Branding */}
-        <header className="text-center flex flex-col items-center gap-2">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-2"
-            style={{ backgroundColor: "#1a365d", boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-            <span className="material-symbols-outlined text-[#d6e3ff] text-4xl"
-              style={{ fontVariationSettings: "'FILL' 1" }}>
-              shield_with_heart
-            </span>
-          </div>
-          <h1 className="text-[#002045] text-2xl md:text-[32px] font-bold tracking-tight"
-            style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
-            AppMiSalud Familia
-          </h1>
+        <header className="text-center flex flex-col items-center gap-3">
+          <ShieldIcon size={56} />
+          <ShieldLogo size={22} />
           <p className="text-[#43474e] text-base px-4">
             Bienvenido a su bóveda de salud familiar segura.
           </p>
@@ -126,7 +118,7 @@ export default function LoginPage() {
                   value={form.email}
                   onChange={handleChange}
                   required
-                  className="w-full pl-11 pr-4 py-3 bg-[#f7fafc] border border-[#c4c6cf] rounded-lg outline-none transition-all focus:ring-1 focus:ring-[#13696a] focus:border-[#13696a] text-sm"
+                  className="w-full pl-11 pr-4 py-3 bg-[#f7fafc] border border-[#c4c6cf] rounded-lg outline-none transition-all focus:ring-1 focus:ring-[#00B8A9] focus:border-[#00B8A9] text-sm"
                 />
               </div>
             </div>
@@ -145,12 +137,12 @@ export default function LoginPage() {
                   value={form.password}
                   onChange={handleChange}
                   required
-                  className="w-full pl-11 pr-11 py-3 bg-[#f7fafc] border border-[#c4c6cf] rounded-lg outline-none transition-all focus:ring-1 focus:ring-[#13696a] focus:border-[#13696a] text-sm"
+                  className="w-full pl-11 pr-11 py-3 bg-[#f7fafc] border border-[#c4c6cf] rounded-lg outline-none transition-all focus:ring-1 focus:ring-[#00B8A9] focus:border-[#00B8A9] text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#74777f] hover:text-[#002045] transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#74777f] hover:text-[#003A7A] transition-colors"
                 >
                   <span className="material-symbols-outlined text-[20px]">
                     {showPassword ? "visibility_off" : "visibility"}
@@ -162,7 +154,7 @@ export default function LoginPage() {
             {/* Olvidé contraseña */}
             <div className="text-right">
               <Link href="/forgot-password"
-                className="text-sm font-semibold text-[#13696a] hover:underline transition-all">
+                className="text-sm font-semibold text-[#00B8A9] hover:underline transition-all">
                 Olvidé mi contraseña
               </Link>
             </div>
@@ -172,7 +164,7 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               className="w-full h-12 rounded-full text-white font-semibold text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-60"
-              style={{ backgroundColor: "#002045", boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}
+              style={{ backgroundColor: "#003A7A", boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}
             >
               {loading ? (
                 <span className="material-symbols-outlined animate-spin">progress_activity</span>
@@ -208,7 +200,7 @@ export default function LoginPage() {
 
           {/* Crear cuenta */}
           <Link href="/register"
-            className="w-full h-12 rounded-full border-2 border-[#13696a] text-[#13696a] font-semibold text-sm flex items-center justify-center hover:bg-[rgba(19,105,106,0.05)] active:scale-[0.98] transition-all">
+            className="w-full h-12 rounded-full border-2 border-[#00B8A9] text-[#00B8A9] font-semibold text-sm flex items-center justify-center hover:bg-[rgba(19,105,106,0.05)] active:scale-[0.98] transition-all">
             Crear cuenta
           </Link>
         </section>
@@ -217,8 +209,8 @@ export default function LoginPage() {
         <footer className="space-y-4">
           <div className="rounded-lg p-4 flex items-start gap-4"
             style={{ backgroundColor: "rgba(162,237,237,0.3)" }}>
-            <span className="material-symbols-outlined text-[#13696a] shrink-0 mt-0.5">security_update_good</span>
-            <p className="text-xs font-medium text-[#1a6d6e]">
+            <span className="material-symbols-outlined text-[#00B8A9] shrink-0 mt-0.5">security_update_good</span>
+            <p className="text-xs font-medium text-[#00968A]">
               Tu información médica requiere acceso seguro. Nunca compartas tu contraseña.
             </p>
           </div>

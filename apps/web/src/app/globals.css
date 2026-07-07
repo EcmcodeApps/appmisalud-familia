@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Colores del sistema de diseño AppMiSalud */
-  --color-primary: #002045;
-  --color-primary-container: #1a365d;
+  /* Colores del sistema de diseño MiSalud FamilIA */
+  --color-primary: #003A7A;
+  --color-primary-container: #005EB8;
   --color-primary-fixed: #d6e3ff;
   --color-primary-fixed-dim: #adc7f7;
   --color-on-primary: #ffffff;
@@ -11,11 +11,11 @@
   --color-on-primary-fixed: #001b3c;
   --color-inverse-primary: #adc7f7;
 
-  --color-secondary: #13696a;
-  --color-secondary-container: #a2eded;
-  --color-secondary-fixed: #a5eff0;
+  --color-secondary: #00B8A9;
+  --color-secondary-container: #B3EDE8;
+  --color-secondary-fixed: #A5EDE8;
   --color-on-secondary: #ffffff;
-  --color-on-secondary-container: #1a6d6e;
+  --color-on-secondary-container: #00968A;
   --color-on-secondary-fixed: #002020;
   --color-on-secondary-fixed-variant: #004f50;
 

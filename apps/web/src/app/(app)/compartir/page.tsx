@@ -122,26 +122,26 @@ export default function CompartirPage() {
         <div className="flex items-center gap-3">
           <button onClick={() => router.back()}
             className="p-2 rounded-full hover:bg-[#ebeef0] transition-colors">
-            <span className="material-symbols-outlined text-[#002045]">arrow_back</span>
+            <span className="material-symbols-outlined text-[#003A7A]">arrow_back</span>
           </button>
-          <h1 className="font-bold text-base text-[#002045]"
+          <h1 className="font-bold text-base text-[#003A7A]"
             style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
             Compartir Bóveda Médica
           </h1>
         </div>
-        <span className="material-symbols-outlined text-[#13696a]"
+        <span className="material-symbols-outlined text-[#00B8A9]"
           style={{ fontVariationSettings: "'FILL' 1" }}>shield_with_heart</span>
       </div>
 
       <main className="px-4 md:px-12 max-w-2xl mx-auto py-6 space-y-5">
 
         {/* Security notice */}
-        <div className="flex items-start gap-3 p-4 rounded-2xl border border-[#13696a]/20"
+        <div className="flex items-start gap-3 p-4 rounded-2xl border border-[#00B8A9]/20"
           style={{ backgroundColor: "rgba(162,237,237,0.15)" }}>
-          <span className="material-symbols-outlined text-[#13696a] shrink-0"
+          <span className="material-symbols-outlined text-[#00B8A9] shrink-0"
             style={{ fontVariationSettings: "'FILL' 1" }}>lock_person</span>
           <div>
-            <p className="text-sm font-semibold text-[#13696a] mb-0.5">Aviso de Seguridad</p>
+            <p className="text-sm font-semibold text-[#00B8A9] mb-0.5">Aviso de Seguridad</p>
             <p className="text-xs text-[#43474e]">
               Comparte información médica solo con personas de confianza. Los permisos pueden ser revocados en cualquier momento.
             </p>
@@ -153,13 +153,13 @@ export default function CompartirPage() {
 
           {/* Recipient */}
           <Card title="Destinatario">
-            <div className="flex items-center gap-2 border border-[#c4c6cf] rounded-xl bg-[#f7fafc] px-3 py-2 focus-within:ring-2 focus-within:ring-[#13696a]/30 transition-all">
+            <div className="flex items-center gap-2 border border-[#c4c6cf] rounded-xl bg-[#f7fafc] px-3 py-2 focus-within:ring-2 focus-within:ring-[#00B8A9]/30 transition-all">
               <span className="material-symbols-outlined text-[#74777f]">person_search</span>
               <input
                 value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
                 placeholder="Correo electrónico o nombre del contacto"
-                className="flex-1 bg-transparent border-none focus:ring-0 text-sm text-[#002045] placeholder:text-[#74777f]"
+                className="flex-1 bg-transparent border-none focus:ring-0 text-sm text-[#003A7A] placeholder:text-[#74777f]"
                 type="text"
               />
             </div>
@@ -169,9 +169,9 @@ export default function CompartirPage() {
                 <button key={c.label} type="button"
                   onClick={() => setRecipient(c.email || c.label)}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors"
-                  style={{ backgroundColor: "#ebeef0", color: "#002045" }}>
+                  style={{ backgroundColor: "#ebeef0", color: "#003A7A" }}>
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                    style={{ backgroundColor: "#13696a" }}>
+                    style={{ backgroundColor: "#00B8A9" }}>
                     {c.label[0]}
                   </div>
                   {c.label}
@@ -189,16 +189,16 @@ export default function CompartirPage() {
                   <label key={t}
                     className="flex items-center justify-between p-4 rounded-xl cursor-pointer border transition-all"
                     style={{
-                      borderColor: active ? "#13696a" : "rgba(196,198,207,0.4)",
+                      borderColor: active ? "#00B8A9" : "rgba(196,198,207,0.4)",
                       backgroundColor: active ? "rgba(162,237,237,0.1)" : "white",
                     }}>
                     <div className="flex items-center gap-3">
-                      <span className="material-symbols-outlined text-[#13696a]"
+                      <span className="material-symbols-outlined text-[#00B8A9]"
                         style={{ fontVariationSettings: t === "resumen_ia" ? "'FILL' 1" : "'FILL' 0" }}>
                         {shareTypeIcon(t)}
                       </span>
                       <div>
-                        <p className="text-sm font-semibold text-[#002045]">{shareTypeLabel(t)}</p>
+                        <p className="text-sm font-semibold text-[#003A7A]">{shareTypeLabel(t)}</p>
                         <p className="text-xs text-[#74777f]">
                           {t === "documentos" && "Selecciona archivos individuales"}
                           {t === "carpeta"    && "Acceso a toda la subcarpeta de un miembro"}
@@ -208,7 +208,7 @@ export default function CompartirPage() {
                     </div>
                     <input type="radio" name="share_type" checked={active}
                       onChange={() => setShareType(t)}
-                      className="w-4 h-4 accent-[#13696a]" />
+                      className="w-4 h-4 accent-[#00B8A9]" />
                   </label>
                 );
               })}
@@ -242,8 +242,8 @@ export default function CompartirPage() {
                     className="px-4 py-2 rounded-xl text-sm font-semibold border transition-all"
                     style={{
                       backgroundColor: duration === d ? "rgba(162,237,237,0.5)" : "#f1f4f6",
-                      borderColor:     duration === d ? "#13696a" : "rgba(196,198,207,0.4)",
-                      color:           duration === d ? "#1a6d6e" : "#43474e",
+                      borderColor:     duration === d ? "#00B8A9" : "rgba(196,198,207,0.4)",
+                      color:           duration === d ? "#00968A" : "#43474e",
                     }}>
                     {d === "ilimitado" ? "Ilimitado" : d}
                   </button>
@@ -260,7 +260,7 @@ export default function CompartirPage() {
           {/* Send button */}
           <button type="submit" disabled={sending || !recipient.trim()}
             className="w-full h-14 rounded-xl text-white font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50"
-            style={{ backgroundColor: "#002045", boxShadow: "0 4px 20px rgba(0,32,69,0.2)" }}>
+            style={{ backgroundColor: "#003A7A", boxShadow: "0 4px 20px rgba(0,32,69,0.2)" }}>
             {sending
               ? <span className="material-symbols-outlined animate-spin">progress_activity</span>
               : <span className="material-symbols-outlined">send</span>}
@@ -292,7 +292,7 @@ export default function CompartirPage() {
                         </span>
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-semibold text-[#002045] truncate">
+                        <p className="text-sm font-semibold text-[#003A7A] truncate">
                           {s.recipientEmail}
                         </p>
                         <p className="text-xs text-[#74777f]">
@@ -319,7 +319,7 @@ export default function CompartirPage() {
       {/* Toast */}
       {toast && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 rounded-full text-sm font-semibold text-white shadow-lg"
-          style={{ backgroundColor: "#002045" }}>
+          style={{ backgroundColor: "#003A7A" }}>
           {toast}
         </div>
       )}
@@ -331,7 +331,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
   return (
     <div className="bg-white rounded-2xl p-5 border border-[rgba(196,198,207,0.3)]"
       style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-      <h3 className="text-sm font-bold text-[#002045] mb-4"
+      <h3 className="text-sm font-bold text-[#003A7A] mb-4"
         style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
         {title}
       </h3>
@@ -351,7 +351,7 @@ function ToggleRow({ label, checked, onChange, disabled }: {
         onClick={onChange}
         disabled={disabled}
         className="relative w-11 h-6 rounded-full transition-colors focus:outline-none disabled:opacity-60"
-        style={{ backgroundColor: checked ? "#13696a" : "#c4c6cf" }}>
+        style={{ backgroundColor: checked ? "#00B8A9" : "#c4c6cf" }}>
         <span
           className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform"
           style={{ left: checked ? "calc(100% - 1.375rem)" : "0.125rem" }}

@@ -95,7 +95,7 @@ export default function DetalleExamenPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <span className="material-symbols-outlined text-[#002045] text-5xl animate-pulse"
+        <span className="material-symbols-outlined text-[#003A7A] text-5xl animate-pulse"
           style={{ fontVariationSettings: "'FILL' 1" }}>health_metrics</span>
       </div>
     );
@@ -118,15 +118,15 @@ export default function DetalleExamenPage() {
         <div className="flex items-center gap-3 min-w-0">
           <button onClick={() => router.back()}
             className="p-2 rounded-full hover:bg-[#ebeef0] transition-colors shrink-0">
-            <span className="material-symbols-outlined text-[#002045]">arrow_back</span>
+            <span className="material-symbols-outlined text-[#003A7A]">arrow_back</span>
           </button>
           <div className="min-w-0">
             <nav className="flex items-center gap-1 text-xs text-[#74777f] mb-0.5">
-              <Link href="/boveda" className="hover:text-[#002045]">Bóveda</Link>
+              <Link href="/boveda" className="hover:text-[#003A7A]">Bóveda</Link>
               <span className="material-symbols-outlined text-[14px]">chevron_right</span>
               <span>{doc_.docType}</span>
             </nav>
-            <p className="font-bold text-sm text-[#002045] truncate"
+            <p className="font-bold text-sm text-[#003A7A] truncate"
               style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
               {doc_.fileName}
             </p>
@@ -137,15 +137,15 @@ export default function DetalleExamenPage() {
         <div className="hidden md:flex items-center gap-2 shrink-0">
           <button onClick={handleExplain} disabled={aiLoading}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-60 transition-all"
-            style={{ backgroundColor: "#002045" }}>
+            style={{ backgroundColor: "#003A7A" }}>
             {aiLoading
               ? <span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
               : <span className="material-symbols-outlined text-[18px]">auto_awesome</span>}
             {aiLoading ? "Analizando…" : "Generar resumen médico"}
           </button>
           <button onClick={handleShare}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-colors hover:bg-[#a2eded]/20"
-            style={{ color: "#13696a", borderColor: "#13696a" }}>
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-colors hover:bg-[#B3EDE8]/20"
+            style={{ color: "#00B8A9", borderColor: "#00B8A9" }}>
             <span className="material-symbols-outlined text-[18px]">share</span>
             Compartir
           </button>
@@ -156,7 +156,7 @@ export default function DetalleExamenPage() {
 
         {/* Title row */}
         <section className="flex flex-col gap-1">
-          <h1 className="text-2xl md:text-[32px] font-bold text-[#002045]"
+          <h1 className="text-2xl md:text-[32px] font-bold text-[#003A7A]"
             style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
             {doc_.docType}
           </h1>
@@ -173,7 +173,7 @@ export default function DetalleExamenPage() {
             </span>
             {doc_.aiReady && (
               <span className="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
-                style={{ backgroundColor: "rgba(162,237,237,0.5)", color: "#1a6d6e" }}>
+                style={{ backgroundColor: "rgba(162,237,237,0.5)", color: "#00968A" }}>
                 <span className="material-symbols-outlined text-[14px]">verified</span>
                 IA procesado
               </span>
@@ -200,18 +200,18 @@ export default function DetalleExamenPage() {
             <div className="bg-white rounded-2xl overflow-hidden border border-[rgba(196,198,207,0.3)]"
               style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
               <div className="px-6 py-4 border-b border-[#ebeef0] bg-[#f1f4f6] flex items-center justify-between flex-wrap gap-3">
-                <h3 className="font-bold text-lg text-[#002045]"
+                <h3 className="font-bold text-lg text-[#003A7A]"
                   style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
                   Hallazgos del Examen
                 </h3>
                 <div className="flex gap-2">
                   <button onClick={() => { const a = document.createElement("a"); a.href = doc_.downloadURL; a.download = doc_.fileName; a.click(); }}
-                    className="flex items-center gap-1 text-sm font-semibold text-[#13696a] hover:underline">
+                    className="flex items-center gap-1 text-sm font-semibold text-[#00B8A9] hover:underline">
                     <span className="material-symbols-outlined text-[18px]">download</span>
                     Descargar PDF
                   </button>
                   <button onClick={() => { const w = window.open(doc_.downloadURL); w?.print(); }}
-                    className="flex items-center gap-1 text-sm font-semibold text-[#13696a] hover:underline">
+                    className="flex items-center gap-1 text-sm font-semibold text-[#00B8A9] hover:underline">
                     <span className="material-symbols-outlined text-[18px]">print</span>
                     Imprimir
                   </button>
@@ -224,7 +224,7 @@ export default function DetalleExamenPage() {
                   {summary && (
                     <div className="px-6 py-5">
                       <p className="text-xs font-bold uppercase tracking-wider text-[#43474e] mb-2">Resumen General</p>
-                      <p className="text-sm text-[#002045] leading-relaxed">{summary}</p>
+                      <p className="text-sm text-[#003A7A] leading-relaxed">{summary}</p>
                     </div>
                   )}
 
@@ -246,7 +246,7 @@ export default function DetalleExamenPage() {
                             return (
                               <tr key={i} className="hover:bg-[#f1f4f6] transition-colors">
                                 <td className="px-6 py-4 text-sm text-[#74777f]">{i + 1}</td>
-                                <td className="px-6 py-4 text-sm text-[#002045] leading-relaxed">{f}</td>
+                                <td className="px-6 py-4 text-sm text-[#003A7A] leading-relaxed">{f}</td>
                                 <td className="px-6 py-4">
                                   {isAlert ? (
                                     <span className="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
@@ -255,7 +255,7 @@ export default function DetalleExamenPage() {
                                     </span>
                                   ) : isOk ? (
                                     <span className="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
-                                      style={{ backgroundColor: "rgba(162,237,237,0.5)", color: "#1a6d6e" }}>
+                                      style={{ backgroundColor: "rgba(162,237,237,0.5)", color: "#00968A" }}>
                                       Normal
                                     </span>
                                   ) : (
@@ -286,11 +286,11 @@ export default function DetalleExamenPage() {
                 <div className="flex flex-col items-center justify-center py-16 px-6 text-center gap-4">
                   <div className="w-16 h-16 rounded-full flex items-center justify-center"
                     style={{ backgroundColor: "rgba(162,237,237,0.2)" }}>
-                    <span className="material-symbols-outlined text-[#13696a] text-4xl"
+                    <span className="material-symbols-outlined text-[#00B8A9] text-4xl"
                       style={{ fontVariationSettings: "'FILL' 1" }}>health_metrics</span>
                   </div>
                   <div>
-                    <p className="font-bold text-[#002045] mb-1">Sin análisis IA todavía</p>
+                    <p className="font-bold text-[#003A7A] mb-1">Sin análisis IA todavía</p>
                     <p className="text-sm text-[#43474e]">
                       {doc_.extractedText
                         ? "Presiona \"Generar resumen médico\" para analizar este examen."
@@ -300,7 +300,7 @@ export default function DetalleExamenPage() {
                   {doc_.extractedText && (
                     <button onClick={handleExplain} disabled={aiLoading}
                       className="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white disabled:opacity-60"
-                      style={{ backgroundColor: "#002045" }}>
+                      style={{ backgroundColor: "#003A7A" }}>
                       {aiLoading
                         ? <span className="material-symbols-outlined animate-spin">progress_activity</span>
                         : <span className="material-symbols-outlined">auto_awesome</span>}
@@ -315,7 +315,7 @@ export default function DetalleExamenPage() {
             <div className="bg-white rounded-2xl overflow-hidden border border-[rgba(196,198,207,0.3)]"
               style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
               <div className="px-6 py-4 border-b border-[#ebeef0]">
-                <h3 className="font-bold text-base text-[#002045]"
+                <h3 className="font-bold text-base text-[#003A7A]"
                   style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
                   Documento Original
                 </h3>
@@ -329,9 +329,9 @@ export default function DetalleExamenPage() {
                     className="w-full h-full object-contain" />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center gap-3">
-                    <span className="material-symbols-outlined text-[#13696a] text-5xl">description</span>
+                    <span className="material-symbols-outlined text-[#00B8A9] text-5xl">description</span>
                     <button onClick={() => window.open(doc_.downloadURL, "_blank")}
-                      className="text-sm font-semibold text-[#002045] underline">
+                      className="text-sm font-semibold text-[#003A7A] underline">
                       Abrir documento
                     </button>
                   </div>
@@ -346,12 +346,12 @@ export default function DetalleExamenPage() {
             {/* AI insight card */}
             <div className="rounded-2xl p-6 relative overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, #1a365d 0%, #133a4a 100%)",
+                background: "linear-gradient(135deg, #005EB8 0%, #133a4a 100%)",
                 boxShadow: "0px 4px 20px rgba(26,54,93,0.12)",
               }}>
               <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full blur-2xl opacity-20"
-                style={{ backgroundColor: "#13696a" }} />
-              <span className="material-symbols-outlined text-[#a5eff0] text-4xl mb-3 block"
+                style={{ backgroundColor: "#00B8A9" }} />
+              <span className="material-symbols-outlined text-[#A5EDE8] text-4xl mb-3 block"
                 style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
               <h4 className="text-sm font-bold text-white mb-1 flex items-center gap-1">
                 IA Responsable
@@ -364,7 +364,7 @@ export default function DetalleExamenPage() {
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
                     {[0,1,2].map((i) => (
-                      <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#a5eff0] animate-bounce"
+                      <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#A5EDE8] animate-bounce"
                         style={{ animationDelay: `${i * 0.15}s` }} />
                     ))}
                   </div>
@@ -385,8 +385,8 @@ export default function DetalleExamenPage() {
             {suggestions.length > 0 && (
               <div className="bg-white rounded-2xl p-6 border border-[rgba(196,198,207,0.3)]"
                 style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#002045] flex items-center gap-2 mb-4">
-                  <span className="material-symbols-outlined text-[18px] text-[#002045]">medication</span>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#003A7A] flex items-center gap-2 mb-4">
+                  <span className="material-symbols-outlined text-[18px] text-[#003A7A]">medication</span>
                   Próximos Pasos Sugeridos
                 </h4>
                 <div className="space-y-3">
@@ -394,10 +394,10 @@ export default function DetalleExamenPage() {
                     <div key={i} className="flex items-start gap-3 p-3 rounded-xl"
                       style={{ backgroundColor: "#f1f4f6" }}>
                       <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold text-white"
-                        style={{ backgroundColor: "#13696a" }}>
+                        style={{ backgroundColor: "#00B8A9" }}>
                         {i + 1}
                       </span>
-                      <p className="text-sm text-[#002045] leading-snug">{s}</p>
+                      <p className="text-sm text-[#003A7A] leading-snug">{s}</p>
                     </div>
                   ))}
                 </div>
@@ -407,7 +407,7 @@ export default function DetalleExamenPage() {
             {/* Clinical recommendation */}
             {doc_.notes && (
               <div className="bg-[#ebeef0] rounded-2xl p-6 border border-[rgba(196,198,207,0.3)]">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#002045] flex items-center gap-2 mb-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#003A7A] flex items-center gap-2 mb-3">
                   <span className="material-symbols-outlined text-[18px]">history_edu</span>
                   Notas del Documento
                 </h4>
@@ -423,7 +423,7 @@ export default function DetalleExamenPage() {
                 <span className="material-symbols-outlined text-[#002432]">lock</span>
               </div>
               <div>
-                <p className="text-sm font-bold text-[#002045]">Bóveda de Seguridad</p>
+                <p className="text-sm font-bold text-[#003A7A]">Bóveda de Seguridad</p>
                 <p className="text-xs text-[#74777f]">Encriptación AES-256 activa</p>
               </div>
             </div>
@@ -431,7 +431,7 @@ export default function DetalleExamenPage() {
             {/* Mobile: generate button */}
             <button onClick={handleExplain} disabled={aiLoading || !doc_.extractedText}
               className="md:hidden w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-sm font-semibold text-white disabled:opacity-50"
-              style={{ backgroundColor: "#002045", boxShadow: "0 4px 20px rgba(0,32,69,0.2)" }}>
+              style={{ backgroundColor: "#003A7A", boxShadow: "0 4px 20px rgba(0,32,69,0.2)" }}>
               {aiLoading
                 ? <span className="material-symbols-outlined animate-spin">progress_activity</span>
                 : <span className="material-symbols-outlined">auto_awesome</span>}

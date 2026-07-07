@@ -1,5 +1,5 @@
 /**
- * Cliente HTTP para el backend FastAPI de AppMiSalud.
+ * Cliente HTTP para el backend FastAPI de MiSalud FamilIA.
  * Adjunta automáticamente el token Firebase en cada request.
  */
 import { auth } from "@/lib/firebase/config";

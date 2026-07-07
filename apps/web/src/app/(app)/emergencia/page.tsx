@@ -94,7 +94,7 @@ export default function EmergenciaPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <span className="material-symbols-outlined text-[#002045] text-5xl animate-pulse"
+        <span className="material-symbols-outlined text-[#003A7A] text-5xl animate-pulse"
           style={{ fontVariationSettings: "'FILL' 1" }}>shield_with_heart</span>
       </div>
     );
@@ -119,7 +119,7 @@ export default function EmergenciaPage() {
               <button key={p.id} onClick={() => selectPersona(p.id)}
                 className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all"
                 style={{
-                  backgroundColor: selectedId === p.id ? "#002045" : "#ffffff",
+                  backgroundColor: selectedId === p.id ? "#003A7A" : "#ffffff",
                   color: selectedId === p.id ? "#ffffff" : "#43474e",
                   border: selectedId === p.id ? "none" : "1px solid #c4c6cf",
                 }}>
@@ -153,12 +153,12 @@ export default function EmergenciaPage() {
                     className="w-20 h-20 rounded-full object-cover border-4 border-[#d6e3ff]" />
                 ) : (
                   <div className="w-20 h-20 rounded-full border-4 border-[#d6e3ff] flex items-center justify-center text-white text-3xl font-bold shrink-0"
-                    style={{ backgroundColor: "#002045" }}>
+                    style={{ backgroundColor: "#003A7A" }}>
                     {persona.name[0].toUpperCase()}
                   </div>
                 )}
                 <div>
-                  <h2 className="text-xl font-bold text-[#002045]"
+                  <h2 className="text-xl font-bold text-[#003A7A]"
                     style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
                     {persona.name}
                   </h2>
@@ -172,7 +172,7 @@ export default function EmergenciaPage() {
 
               {/* Blood type */}
               <div className="rounded-2xl p-5 flex flex-col items-center justify-center text-center"
-                style={{ backgroundColor: "#002045", boxShadow: "0 0 20px rgba(186,26,26,0.1)" }}>
+                style={{ backgroundColor: "#003A7A", boxShadow: "0 0 20px rgba(186,26,26,0.1)" }}>
                 <span className="text-xs font-bold uppercase tracking-wider text-white/70 mb-1">Grupo Sanguíneo</span>
                 <span className="text-5xl font-bold text-white leading-none"
                   style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
@@ -184,7 +184,7 @@ export default function EmergenciaPage() {
               <div className="bg-white rounded-2xl p-5 flex flex-col justify-center border border-[rgba(196,198,207,0.3)]"
                 style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
                 <span className="text-xs text-[#43474e] uppercase font-bold mb-1">EPS / Seguro</span>
-                <p className="font-bold text-[#002045] text-base leading-snug">
+                <p className="font-bold text-[#003A7A] text-base leading-snug">
                   {persona.eps || "No registrado"}
                 </p>
               </div>
@@ -215,12 +215,12 @@ export default function EmergenciaPage() {
             </div>
 
             {/* Medications */}
-            <div className="bg-white rounded-2xl p-4 border-l-8 border-[#13696a] border border-[rgba(196,198,207,0.3)]"
+            <div className="bg-white rounded-2xl p-4 border-l-8 border-[#00B8A9] border border-[rgba(196,198,207,0.3)]"
               style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
               <div className="flex items-center gap-2 mb-3">
-                <span className="material-symbols-outlined text-[#13696a]"
+                <span className="material-symbols-outlined text-[#00B8A9]"
                   style={{ fontVariationSettings: "'FILL' 1" }}>medication</span>
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[#13696a]">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#00B8A9]">
                   Medicamentos Actuales
                 </h3>
               </div>
@@ -236,12 +236,12 @@ export default function EmergenciaPage() {
             </div>
 
             {/* Diagnoses */}
-            <div className="bg-white rounded-2xl p-4 border-l-8 border-[#002045] border border-[rgba(196,198,207,0.3)]"
+            <div className="bg-white rounded-2xl p-4 border-l-8 border-[#003A7A] border border-[rgba(196,198,207,0.3)]"
               style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
               <div className="flex items-center gap-2 mb-3">
-                <span className="material-symbols-outlined text-[#002045]"
+                <span className="material-symbols-outlined text-[#003A7A]"
                   style={{ fontVariationSettings: "'FILL' 1" }}>clinical_notes</span>
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[#002045]">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#003A7A]">
                   Diagnósticos Activos
                 </h3>
               </div>
@@ -262,12 +262,12 @@ export default function EmergenciaPage() {
                 <span className="text-xs font-bold uppercase tracking-wider text-[#43474e]">
                   Contacto de Emergencia
                 </span>
-                <p className="font-bold text-[#002045] mt-1">
+                <p className="font-bold text-[#003A7A] mt-1">
                   {persona.emergencyName || "No registrado"}
                 </p>
                 {persona.emergencyPhone && (
                   <a href={`tel:${persona.emergencyPhone}`}
-                    className="flex items-center gap-1 mt-1 font-bold text-[#13696a] text-sm hover:underline">
+                    className="flex items-center gap-1 mt-1 font-bold text-[#00B8A9] text-sm hover:underline">
                     <span className="material-symbols-outlined text-[18px]">call</span>
                     {persona.emergencyPhone}
                   </a>
@@ -278,7 +278,7 @@ export default function EmergenciaPage() {
                 <span className="text-xs font-bold uppercase tracking-wider text-[#43474e]">
                   Médico Tratante
                 </span>
-                <p className="font-bold text-[#002045] mt-1">
+                <p className="font-bold text-[#003A7A] mt-1">
                   {persona.doctor || "No registrado"}
                 </p>
               </div>
@@ -287,7 +287,7 @@ export default function EmergenciaPage() {
             {/* Security badge */}
             <div className="flex justify-center items-center gap-2 opacity-60 py-2">
               <span className="material-symbols-outlined text-[16px]">verified_user</span>
-              <span className="text-xs">Datos encriptados y verificados por AppMiSalud Familia</span>
+              <span className="text-xs">Datos encriptados y verificados por MiSalud FamilIA</span>
             </div>
 
           </div>
@@ -298,7 +298,7 @@ export default function EmergenciaPage() {
               style={{ backgroundColor: "#ffdad6" }}>
               <span className="material-symbols-outlined text-[#ba1a1a] text-5xl">person_off</span>
             </div>
-            <p className="font-bold text-[#002045] text-lg"
+            <p className="font-bold text-[#003A7A] text-lg"
               style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
               Sin perfiles registrados
             </p>
@@ -315,7 +315,7 @@ export default function EmergenciaPage() {
         <div className="max-w-2xl mx-auto p-4 space-y-3">
           <button onClick={() => setShowQR(true)}
             className="w-full h-14 text-white font-bold text-base rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
-            style={{ backgroundColor: "#002045" }}>
+            style={{ backgroundColor: "#003A7A" }}>
             <span className="material-symbols-outlined"
               style={{ fontVariationSettings: "'FILL' 1" }}>qr_code_2</span>
             Mostrar en urgencias
@@ -352,7 +352,7 @@ export default function EmergenciaPage() {
               alt="QR Emergencia"
               className="w-60 h-60 mx-auto rounded-xl"
             />
-            <h3 className="font-bold text-xl text-[#002045]"
+            <h3 className="font-bold text-xl text-[#003A7A]"
               style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
               Vista de Urgencias
             </h3>
@@ -361,7 +361,7 @@ export default function EmergenciaPage() {
             </p>
             <button onClick={() => setShowQR(false)}
               className="w-full py-3 rounded-xl font-semibold text-sm"
-              style={{ backgroundColor: "#002045", color: "#ffffff" }}>
+              style={{ backgroundColor: "#003A7A", color: "#ffffff" }}>
               Cerrar
             </button>
           </div>

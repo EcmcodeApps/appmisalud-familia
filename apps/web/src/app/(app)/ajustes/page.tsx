@@ -8,8 +8,6 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { deleteUser } from "firebase/auth";
 import { db, auth } from "@/lib/firebase/config";
 import { logoutUser } from "@/lib/firebase/auth";
-import { useTrialStatus } from "@/lib/hooks/useTrialStatus";
-import { TrialStatusCard } from "@/components/TrialStatusCard";
 
 type AIProvider = "recommended" | "deepseek" | "openai";
 
@@ -35,7 +33,6 @@ export default function AjustesPage() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState("");
   const [deletingAccount, setDeletingAccount] = useState(false);
-  const { trial } = useTrialStatus();
 
   // Load prefs from Firestore
   useEffect(() => {
@@ -102,29 +99,25 @@ export default function AjustesPage() {
               className="w-16 h-16 rounded-full object-cover" />
           ) : (
             <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold"
-              style={{ backgroundColor: "#002045" }}>
+              style={{ backgroundColor: "#003A7A" }}>
               {name[0].toUpperCase()}
             </div>
           )}
           <div className="absolute bottom-0 right-0 w-5 h-5 rounded-full border-2 border-white flex items-center justify-center"
-            style={{ backgroundColor: "#002045" }}>
+            style={{ backgroundColor: "#003A7A" }}>
             <span className="material-symbols-outlined text-white" style={{ fontSize: 12, fontVariationSettings: "'FILL' 1" }}>verified</span>
           </div>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-[#002045] truncate">{name}</p>
+          <p className="font-bold text-[#003A7A] truncate">{name}</p>
           <p className="text-xs text-[#43474e] truncate">{email}</p>
-          <p className="text-xs text-[#13696a] font-semibold">
-            {trial?.status === "active" ? "Gestora Familiar · Activa" : "Gestora Familiar · Prueba gratuita"}
-          </p>
+          <p className="text-xs text-[#00B8A9] font-semibold">Gestora Familiar · Premium</p>
         </div>
         <Link href="/ajustes/perfil"
           className="p-2 rounded-full hover:bg-[#f1f4f6] transition-colors shrink-0">
-          <span className="material-symbols-outlined text-[#002045]">edit</span>
+          <span className="material-symbols-outlined text-[#003A7A]">edit</span>
         </Link>
       </section>
-
-      {trial && <TrialStatusCard trial={trial} compact />}
 
       {/* Cuenta y Seguridad */}
       <SettingsGroup label="Cuenta y Seguridad">
@@ -136,12 +129,12 @@ export default function AjustesPage() {
       {/* IA Salud */}
       <div className="bg-[#f1f4f6] rounded-xl p-4 space-y-3">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#13696a]">auto_awesome</span>
-          <h3 className="font-semibold text-[#002045] text-sm">IA Salud &amp; Proveedor</h3>
+          <span className="material-symbols-outlined text-[#00B8A9]">auto_awesome</span>
+          <h3 className="font-semibold text-[#003A7A] text-sm">IA Salud &amp; Proveedor</h3>
           <div className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-full"
             style={{ backgroundColor: "rgba(162,237,237,0.5)" }}>
-            <span className="material-symbols-outlined text-[#1a6d6e]" style={{ fontSize: 12 }}>neurology</span>
-            <span className="text-[10px] font-bold text-[#1a6d6e] uppercase">IA Activa</span>
+            <span className="material-symbols-outlined text-[#00968A]" style={{ fontSize: 12 }}>neurology</span>
+            <span className="text-[10px] font-bold text-[#00968A] uppercase">IA Activa</span>
           </div>
         </div>
         <p className="text-xs text-[#43474e]">
@@ -152,17 +145,17 @@ export default function AjustesPage() {
         <label className="flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all"
           style={{
             backgroundColor: prefs.aiProvider === "recommended" ? "#e5e9eb" : "#ffffff",
-            borderColor: prefs.aiProvider === "recommended" ? "#13696a" : "#c4c6cf",
+            borderColor: prefs.aiProvider === "recommended" ? "#00B8A9" : "#c4c6cf",
           }}>
           <input type="radio" name="ai" className="hidden"
             checked={prefs.aiProvider === "recommended"}
             onChange={() => updatePref("aiProvider", "recommended")} />
           <div className="flex-1">
-            <span className="block font-bold text-[#002045] text-sm">Recomendado (Híbrido)</span>
+            <span className="block font-bold text-[#003A7A] text-sm">Recomendado (Híbrido)</span>
             <span className="text-xs text-[#43474e]">Optimizado para precisión médica familiar</span>
           </div>
           {prefs.aiProvider === "recommended" && (
-            <span className="material-symbols-outlined text-[#13696a]"
+            <span className="material-symbols-outlined text-[#00B8A9]"
               style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           )}
         </label>
@@ -177,13 +170,13 @@ export default function AjustesPage() {
               className="flex-shrink-0 flex items-center gap-2 p-3 rounded-lg border cursor-pointer hover:bg-[#e5e9eb] transition-colors"
               style={{
                 backgroundColor: prefs.aiProvider === p.val ? "#e5e9eb" : "#ffffff",
-                borderColor: prefs.aiProvider === p.val ? "#13696a" : "#c4c6cf",
+                borderColor: prefs.aiProvider === p.val ? "#00B8A9" : "#c4c6cf",
               }}>
               <input type="radio" name="ai" className="hidden"
                 checked={prefs.aiProvider === p.val}
                 onChange={() => updatePref("aiProvider", p.val)} />
               <span className="material-symbols-outlined text-[#43474e] text-[20px]">{p.icon}</span>
-              <span className="text-xs font-semibold text-[#002045]">{p.label}</span>
+              <span className="text-xs font-semibold text-[#003A7A]">{p.label}</span>
             </label>
           ))}
         </div>
@@ -238,16 +231,16 @@ export default function AjustesPage() {
       {/* Trust badge */}
       <div className="flex flex-col items-center gap-1 opacity-60 py-4">
         <div className="flex items-center gap-1">
-          <span className="material-symbols-outlined text-[#002045] text-[16px]">enhanced_encryption</span>
-          <span className="text-xs font-bold text-[#002045]">Cifrado de Extremo a Extremo</span>
+          <span className="material-symbols-outlined text-[#003A7A] text-[16px]">enhanced_encryption</span>
+          <span className="text-xs font-bold text-[#003A7A]">Cifrado de Extremo a Extremo</span>
         </div>
-        <p className="text-[10px] text-[#43474e]">AppMiSalud Familia v1.0.0 · 2025</p>
+        <p className="text-[10px] text-[#43474e]">MiSalud FamilIA v1.0.0 · 2025</p>
       </div>
 
       {/* Saving indicator */}
       {saving && (
         <div className="fixed top-20 right-4 z-50 flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold text-white"
-          style={{ backgroundColor: "#13696a" }}>
+          style={{ backgroundColor: "#00B8A9" }}>
           <span className="material-symbols-outlined text-[14px] animate-spin">progress_activity</span>
           Guardando…
         </div>
@@ -256,7 +249,7 @@ export default function AjustesPage() {
       {/* Toast */}
       {toast && (
         <div className="fixed bottom-28 left-1/2 z-50 px-4 py-2 rounded-full text-xs font-semibold text-white animate-bounce"
-          style={{ backgroundColor: "#002045", transform: "translateX(-50%)" }}>
+          style={{ backgroundColor: "#003A7A", transform: "translateX(-50%)" }}>
           {toast}
         </div>
       )}
@@ -283,7 +276,7 @@ function SettingsRow({ icon, label, sublabel, href, onClick }: {
 }) {
   const inner = (
     <>
-      <span className="material-symbols-outlined text-[#002045] shrink-0">{icon}</span>
+      <span className="material-symbols-outlined text-[#003A7A] shrink-0">{icon}</span>
       <div className="flex-1 text-left min-w-0">
         <span className="block text-sm text-[#181c1e]">{label}</span>
         {sublabel && <span className="text-xs text-[#43474e]">{sublabel}</span>}
@@ -307,14 +300,14 @@ function ToggleRow({ icon, label, checked, onChange }: {
   return (
     <div className="flex items-center justify-between p-4 hover:bg-[#e5e9eb] transition-colors">
       <div className="flex items-center gap-4">
-        <span className="material-symbols-outlined text-[#002045]">{icon}</span>
+        <span className="material-symbols-outlined text-[#003A7A]">{icon}</span>
         <span className="text-sm text-[#181c1e]">{label}</span>
       </div>
       <button
         role="switch" aria-checked={checked}
         onClick={() => onChange(!checked)}
         className="relative inline-flex items-center w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none"
-        style={{ backgroundColor: checked ? "#13696a" : "#c4c6cf" }}>
+        style={{ backgroundColor: checked ? "#00B8A9" : "#c4c6cf" }}>
         <span className="inline-block w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
           style={{ transform: checked ? "translateX(22px)" : "translateX(2px)" }} />
       </button>

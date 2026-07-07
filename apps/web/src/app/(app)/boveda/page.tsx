@@ -136,7 +136,7 @@ export default function BovedaPage() {
       <section className="py-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl md:text-[32px] font-bold text-[#002045]"
+            <h2 className="text-2xl md:text-[32px] font-bold text-[#003A7A]"
               style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
               Documentos médicos
             </h2>
@@ -144,7 +144,7 @@ export default function BovedaPage() {
           </div>
           <Link href="/boveda/subir"
             className="flex items-center gap-2 px-5 py-2 rounded-xl font-semibold text-sm text-white hover:opacity-90 transition-opacity self-start"
-            style={{ backgroundColor: "#002045" }}>
+            style={{ backgroundColor: "#003A7A" }}>
             <span className="material-symbols-outlined text-[18px]">upload</span>
             Subir Documento
           </Link>
@@ -174,7 +174,7 @@ export default function BovedaPage() {
             <button key={c} onClick={() => setChip(c)}
               className="flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-colors"
               style={{
-                backgroundColor: chip === c ? "#002045" : "#e5e9eb",
+                backgroundColor: chip === c ? "#003A7A" : "#e5e9eb",
                 color: chip === c ? "#ffffff" : "#43474e",
               }}>
               {c}
@@ -186,7 +186,7 @@ export default function BovedaPage() {
       {/* Doc grid */}
       {loading ? (
         <div className="flex justify-center py-20">
-          <span className="material-symbols-outlined text-[#002045] text-5xl animate-pulse"
+          <span className="material-symbols-outlined text-[#003A7A] text-5xl animate-pulse"
             style={{ fontVariationSettings: "'FILL' 1" }}>shield_with_heart</span>
         </div>
       ) : visible.length === 0 ? (
@@ -209,7 +209,7 @@ export default function BovedaPage() {
       {/* FAB */}
       <Link href="/boveda/subir"
         className="fixed bottom-24 right-6 w-14 h-14 rounded-full flex items-center justify-center z-40 hover:scale-105 active:scale-95 transition-all"
-        style={{ backgroundColor: "#002045", boxShadow: "0 4px 16px rgba(0,32,69,0.3)" }}>
+        style={{ backgroundColor: "#003A7A", boxShadow: "0 4px 16px rgba(0,32,69,0.3)" }}>
         <span className="material-symbols-outlined text-white text-2xl">add</span>
       </Link>
     </div>
@@ -229,17 +229,17 @@ function DocCard({ doc: d, wide, deleting, onDelete, onShare }: {
   const fileLabel = d.fileType?.toUpperCase() ?? "—";
 
   return (
-    <div className={`bg-white rounded-2xl p-6 flex flex-col justify-between border border-[rgba(196,198,207,0.3)] transition-all hover:border-[#13696a] group${wide ? " lg:col-span-2" : ""}`}
+    <div className={`bg-white rounded-2xl p-6 flex flex-col justify-between border border-[rgba(196,198,207,0.3)] transition-all hover:border-[#00B8A9] group${wide ? " lg:col-span-2" : ""}`}
       style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
 
       {/* Top row */}
       <div className="flex flex-col md:flex-row justify-between items-start mb-4 gap-3">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: bg }}>
-            <span className="material-symbols-outlined text-[#002045] text-3xl">{icon}</span>
+            <span className="material-symbols-outlined text-[#003A7A] text-3xl">{icon}</span>
           </div>
           <div>
-            <h3 className="font-bold text-[#002045] text-base leading-snug">{d.docType}</h3>
+            <h3 className="font-bold text-[#003A7A] text-base leading-snug">{d.docType}</h3>
             {d.fileName && <p className="text-xs text-[#74777f] truncate max-w-[200px]">{d.fileName}</p>}
             <p className="text-xs text-[#43474e]">
               Para: <span className="font-semibold text-[#181c1e]">{d.personaName}</span>
@@ -250,7 +250,7 @@ function DocCard({ doc: d, wide, deleting, onDelete, onShare }: {
         <div className="flex items-center gap-2 flex-wrap">
           {d.aiProcess && d.aiReady !== false && (
             <span className="flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold"
-              style={{ backgroundColor: "rgba(162,237,237,0.3)", borderColor: "#89d3d4", color: "#13696a" }}>
+              style={{ backgroundColor: "rgba(162,237,237,0.3)", borderColor: "#89d3d4", color: "#00B8A9" }}>
               <span className="material-symbols-outlined text-[14px]"
                 style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
               IA Lista
@@ -309,7 +309,7 @@ function DocCard({ doc: d, wide, deleting, onDelete, onShare }: {
         {d.aiProcess ? (
           <button
             className="flex flex-col items-center gap-1 p-2 rounded-lg transition-colors col-span-3 md:col-span-1"
-            style={{ backgroundColor: "rgba(162,237,237,0.3)", color: "#1a6d6e" }}
+            style={{ backgroundColor: "rgba(162,237,237,0.3)", color: "#00968A" }}
             onClick={() => alert("Función IA próximamente disponible.")}>
             <span className="material-symbols-outlined"
               style={{ fontVariationSettings: "'FILL' 1" }}>summarize</span>
@@ -341,8 +341,8 @@ function ActionBtn({ icon, label, onClick }: { icon: string; label: string; onCl
   return (
     <button onClick={onClick}
       className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-[#f1f4f6] transition-colors active:opacity-50">
-      <span className="material-symbols-outlined text-[#002045]">{icon}</span>
-      <span className="text-[10px] font-bold text-[#002045]">{label}</span>
+      <span className="material-symbols-outlined text-[#003A7A]">{icon}</span>
+      <span className="text-[10px] font-bold text-[#003A7A]">{label}</span>
     </button>
   );
 }
@@ -370,7 +370,7 @@ function EmptyState({ onClear }: { onClear: () => void }) {
         <span className="material-symbols-outlined text-[#74777f] text-3xl">folder_zip</span>
       </div>
       <p className="text-[#43474e] font-semibold">No hay documentos que mostrar para estos filtros.</p>
-      <button onClick={onClear} className="text-[#13696a] font-bold hover:underline">
+      <button onClick={onClear} className="text-[#00B8A9] font-bold hover:underline">
         Limpiar filtros
       </button>
     </div>

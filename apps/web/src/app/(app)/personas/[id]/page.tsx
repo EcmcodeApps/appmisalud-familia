@@ -92,7 +92,7 @@ export default function EditarPersonaPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <span className="material-symbols-outlined text-[#002045] text-5xl animate-pulse"
+        <span className="material-symbols-outlined text-[#003A7A] text-5xl animate-pulse"
           style={{ fontVariationSettings: "'FILL' 1" }}>shield_with_heart</span>
       </div>
     );
@@ -114,14 +114,14 @@ export default function EditarPersonaPage() {
         <div className="flex items-center gap-3">
           <button onClick={() => router.back()}
             className="p-2 rounded-full hover:bg-[#ebeef0] transition-colors active:scale-95">
-            <span className="material-symbols-outlined text-[#002045]">arrow_back</span>
+            <span className="material-symbols-outlined text-[#003A7A]">arrow_back</span>
           </button>
-          <h1 className="font-bold text-lg text-[#002045]"
+          <h1 className="font-bold text-lg text-[#003A7A]"
             style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
             Editar Perfil Familiar
           </h1>
         </div>
-        <span className="material-symbols-outlined text-[#13696a]"
+        <span className="material-symbols-outlined text-[#00B8A9]"
           style={{ fontVariationSettings: "'FILL' 1" }}>shield_with_heart</span>
       </div>
 
@@ -129,9 +129,9 @@ export default function EditarPersonaPage() {
 
         {/* Disclaimer */}
         <div className="flex gap-3 items-start p-4 rounded-xl border-l-4"
-          style={{ backgroundColor: "rgba(162,237,237,0.2)", borderColor: "#13696a" }}>
-          <span className="material-symbols-outlined text-[#13696a] shrink-0">info</span>
-          <p className="text-sm font-semibold text-[#1a6d6e]">
+          style={{ backgroundColor: "rgba(162,237,237,0.2)", borderColor: "#00B8A9" }}>
+          <span className="material-symbols-outlined text-[#00B8A9] shrink-0">info</span>
+          <p className="text-sm font-semibold text-[#00968A]">
             Estos datos son sensibles. Puedes dejar campos vacíos y completarlos después. La privacidad de tu familia es nuestra prioridad.
           </p>
         </div>
@@ -246,17 +246,17 @@ export default function EditarPersonaPage() {
           {/* Trust badge */}
           <div className="flex justify-center items-center gap-2 py-2">
             <span className="p-1 rounded-full" style={{ backgroundColor: "rgba(19,105,106,0.1)" }}>
-              <span className="material-symbols-outlined text-[#13696a] text-[18px]"
+              <span className="material-symbols-outlined text-[#00B8A9] text-[18px]"
                 style={{ fontVariationSettings: "'FILL' 1" }}>lock</span>
             </span>
-            <span className="text-xs font-medium text-[#13696a]">Tus datos están encriptados de extremo a extremo.</span>
+            <span className="text-xs font-medium text-[#00B8A9]">Tus datos están encriptados de extremo a extremo.</span>
           </div>
 
           {/* Submit */}
           <div className="pb-6">
             <button type="submit" disabled={saving}
               className="w-full h-14 text-white font-semibold text-base rounded-xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-60"
-              style={{ backgroundColor: "#002045", boxShadow: "0 4px 12px rgba(0,32,69,0.2)" }}>
+              style={{ backgroundColor: "#003A7A", boxShadow: "0 4px 12px rgba(0,32,69,0.2)" }}>
               {saving ? (
                 <span className="material-symbols-outlined animate-spin">progress_activity</span>
               ) : (
@@ -278,10 +278,10 @@ export default function EditarPersonaPage() {
             style={{ boxShadow: "0 24px 48px rgba(0,32,69,0.2)" }}>
             <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto"
               style={{ backgroundColor: "rgba(19,105,106,0.1)" }}>
-              <span className="material-symbols-outlined text-[#13696a] text-5xl"
+              <span className="material-symbols-outlined text-[#00B8A9] text-5xl"
                 style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
             </div>
-            <h3 className="text-xl font-bold text-[#002045]"
+            <h3 className="text-xl font-bold text-[#003A7A]"
               style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
               ¡Perfil Guardado!
             </h3>
@@ -291,7 +291,7 @@ export default function EditarPersonaPage() {
             <button
               onClick={() => { setShowModal(false); router.push("/personas"); }}
               className="w-full py-3 text-white font-semibold rounded-xl"
-              style={{ backgroundColor: "#002045" }}>
+              style={{ backgroundColor: "#003A7A" }}>
               Entendido
             </button>
           </div>
@@ -306,9 +306,9 @@ function Card({ icon, title, children }: { icon: string; title: string; children
     <section className="bg-white rounded-2xl p-6 space-y-4 border border-[rgba(196,198,207,0.3)]"
       style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
       <div className="flex items-center gap-2 mb-1">
-        <span className="material-symbols-outlined text-[#002045]"
+        <span className="material-symbols-outlined text-[#003A7A]"
           style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
-        <h2 className="text-xs font-bold uppercase tracking-wider text-[#1a365d]">{title}</h2>
+        <h2 className="text-xs font-bold uppercase tracking-wider text-[#005EB8]">{title}</h2>
       </div>
       {children}
     </section>
@@ -321,7 +321,7 @@ function Field({ label, icon, children }: { label: string; icon?: string; childr
       <label className="flex items-center gap-1 text-sm font-semibold text-[#43474e]">
         {label}
         {icon && (
-          <span className="material-symbols-outlined text-[#13696a] text-sm"
+          <span className="material-symbols-outlined text-[#00B8A9] text-sm"
             style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
         )}
       </label>

@@ -26,7 +26,7 @@ if (isConfigured) {
     app = getApps()[0];
   }
   if (typeof window !== "undefined") {
-    console.warn("[AppMiSalud] Firebase no configurado. Crea apps/web/.env.local con las variables NEXT_PUBLIC_FIREBASE_*");
+    console.warn("[MiSalud FamilIA] Firebase no configurado. Crea apps/web/.env.local con las variables NEXT_PUBLIC_FIREBASE_*");
   }
 }
 

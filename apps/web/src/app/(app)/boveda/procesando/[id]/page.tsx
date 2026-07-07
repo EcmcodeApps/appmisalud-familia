@@ -99,7 +99,7 @@ export default function ProcesandoPage() {
         {/* Spinner / Done icon */}
         <div className="flex flex-col items-center mb-10">
           {done ? (
-            <span className="material-symbols-outlined text-[#13696a] mb-6"
+            <span className="material-symbols-outlined text-[#00B8A9] mb-6"
               style={{ fontSize: 72, fontVariationSettings: "'FILL' 1" }}>
               check_circle
             </span>
@@ -107,7 +107,7 @@ export default function ProcesandoPage() {
             <LoadingRing />
           )}
 
-          <h2 className="text-2xl md:text-[32px] font-bold text-[#002045] text-center mb-3"
+          <h2 className="text-2xl md:text-[32px] font-bold text-[#003A7A] text-center mb-3"
             style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
             {done ? "¡Documento listo!" : "Analizando tu Documento"}
           </h2>
@@ -137,9 +137,9 @@ export default function ProcesandoPage() {
         <div className="mt-12 flex flex-col items-center gap-3">
           <div className="flex items-center gap-2 px-4 py-2 rounded-full border"
             style={{ backgroundColor: "rgba(0,32,69,0.05)", borderColor: "rgba(0,32,69,0.1)" }}>
-            <span className="material-symbols-outlined text-[#002045] text-sm"
+            <span className="material-symbols-outlined text-[#003A7A] text-sm"
               style={{ fontVariationSettings: "'FILL' 1" }}>lock</span>
-            <span className="text-xs font-bold text-[#002045] uppercase tracking-widest">
+            <span className="text-xs font-bold text-[#003A7A] uppercase tracking-widest">
               Encriptación de Nivel Médico
             </span>
           </div>
@@ -153,7 +153,7 @@ export default function ProcesandoPage() {
       <aside className="hidden lg:block fixed right-8 top-1/2 -translate-y-1/2 w-72">
         <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 border border-white/30 space-y-4"
           style={{ boxShadow: "0 8px 32px rgba(26,54,93,0.12)" }}>
-          <div className="flex items-center gap-2 text-[#13696a]">
+          <div className="flex items-center gap-2 text-[#00B8A9]">
             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
             <h3 className="text-sm font-bold">IA Responsable</h3>
           </div>
@@ -163,7 +163,7 @@ export default function ProcesandoPage() {
           <div className="pt-4 border-t border-[#e0e3e5]">
             <div className="w-full h-28 rounded-xl flex items-center justify-center"
               style={{ backgroundColor: "rgba(162,237,237,0.15)" }}>
-              <span className="material-symbols-outlined text-[#13696a] text-5xl"
+              <span className="material-symbols-outlined text-[#00B8A9] text-5xl"
                 style={{ fontVariationSettings: "'FILL' 1" }}>health_metrics</span>
             </div>
           </div>
@@ -193,7 +193,7 @@ function StepRow({ icon, label, status }: { icon: string; label: string; status:
           ? "#ffffff"
           : "rgba(241,244,246,0.5)",
         backdropFilter: isDone || isActive ? "blur(12px)" : "none",
-        borderLeftColor: isDone ? "#13696a" : isActive ? "#002045" : "transparent",
+        borderLeftColor: isDone ? "#00B8A9" : isActive ? "#003A7A" : "transparent",
         boxShadow: isActive ? "0 4px 16px rgba(26,54,93,0.1)" : undefined,
       }}>
       <div className="flex items-center gap-4">
@@ -202,25 +202,25 @@ function StepRow({ icon, label, status }: { icon: string; label: string; status:
             backgroundColor: isDone
               ? "rgba(162,237,237,0.5)"
               : isActive
-              ? "#1a365d"
+              ? "#005EB8"
               : "#ebeef0",
           }}>
           <span className="material-symbols-outlined text-sm"
             style={{
               fontVariationSettings: isDone ? "'wght' 700" : isActive ? "'FILL' 1" : "'FILL' 0",
-              color: isDone ? "#13696a" : isActive ? "#adc7f7" : "#74777f",
+              color: isDone ? "#00B8A9" : isActive ? "#adc7f7" : "#74777f",
             }}>
             {isDone ? "check" : icon}
           </span>
         </div>
         <span className="text-sm font-semibold transition-all duration-300"
-          style={{ color: isPending ? "#74777f" : "#002045" }}>
+          style={{ color: isPending ? "#74777f" : "#003A7A" }}>
           {label}
         </span>
       </div>
 
       {isDone && (
-        <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "#13696a" }}>
+        <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "#00B8A9" }}>
           Completado
         </span>
       )}
@@ -228,7 +228,7 @@ function StepRow({ icon, label, status }: { icon: string; label: string; status:
         <div className="flex items-center gap-1">
           {[0, 1, 2].map((i) => (
             <div key={i} className="w-1.5 h-1.5 rounded-full animate-bounce"
-              style={{ backgroundColor: "#002045", animationDelay: `${i * 0.2}s` }} />
+              style={{ backgroundColor: "#003A7A", animationDelay: `${i * 0.2}s` }} />
           ))}
         </div>
       )}
@@ -247,7 +247,7 @@ function LoadingRing() {
           style={{
             width: 64, height: 64, margin: 8,
             border: "4px solid transparent",
-            borderTopColor: "#13696a",
+            borderTopColor: "#00B8A9",
             borderRadius: "50%",
             animation: `spin 1.2s cubic-bezier(0.5,0,0.5,1) ${delay} infinite`,
           }} />
