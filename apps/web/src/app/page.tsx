@@ -67,6 +67,12 @@ function Header() {
         <a className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="#solucion">Solución</a>
         <Link className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="/seguridad-informacion-medica">Seguridad</Link>
         <Link
+          href="/login"
+          className="text-sm font-semibold text-[#003A7A] hover:underline underline-offset-4 transition-colors"
+        >
+          Iniciar sesión
+        </Link>
+        <Link
           href="/register"
           className="bg-[#003A7A] text-white px-6 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
         >
