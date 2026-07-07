@@ -65,7 +65,7 @@ function Header() {
       </div>
       <nav className="hidden md:flex gap-8 items-center">
         <a className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="#solucion">Solución</a>
-        <a className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="#seguridad">Seguridad</a>
+        <Link className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="/seguridad-informacion-medica">Seguridad</Link>
         <Link
           href="/register"
           className="bg-[#003A7A] text-white px-6 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
@@ -95,14 +95,14 @@ function Header() {
             Solución
             <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
           </a>
-          <a
+          <Link
             className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-[#42474e] active:bg-[#ebeef0]"
-            href="#seguridad"
+            href="/seguridad-informacion-medica"
             onClick={closeMenu}
           >
             Seguridad
             <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
-          </a>
+          </Link>
           <Link
             href="/login"
             className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-[#42474e] active:bg-[#ebeef0]"
@@ -403,16 +403,16 @@ function CaregiverSection() {
 
 function SecuritySection() {
   const items = [
-    { icon: "lock_reset", label: "Encriptación AES-256" },
-    { icon: "privacy_tip", label: "Cumplimiento HIPAA" },
-    { icon: "fingerprint", label: "Biometría Nativa" },
-    { icon: "cloud_done", label: "Respaldos Diarios" },
+    { icon: "lock_reset", label: "Control de acceso" },
+    { icon: "privacy_tip", label: "Ley 1581 de 2012" },
+    { icon: "fingerprint", label: "Autorización expresa" },
+    { icon: "cloud_done", label: "Custodia digital" },
   ];
 
   const badges = [
-    { icon: "security", label: "DATOS PROTEGIDOS" },
-    { icon: "gpp_good", label: "GDPR COMPLIANT" },
-    { icon: "health_and_safety", label: "ISO 27001" },
+    { icon: "security", label: "DATOS SENSIBLES" },
+    { icon: "gpp_good", label: "PRIVACIDAD COLOMBIA" },
+    { icon: "health_and_safety", label: "IA RESPONSABLE" },
   ];
 
   return (
@@ -423,8 +423,14 @@ function SecuritySection() {
           Tu privacidad es nuestra prioridad absoluta.
         </h3>
         <p data-reveal className="text-[#42474e] text-lg max-w-3xl mx-auto mb-16">
-          Aplicamos estándares de seguridad bancaria y cumplimos con regulaciones internacionales de protección de datos médicos.
+          Diseñamos la plataforma con principios de protección de datos personales en Colombia, autorización informada y acceso controlado a información médica sensible.
         </p>
+        <Link
+          href="/seguridad-informacion-medica"
+          className="mb-12 inline-flex h-11 items-center justify-center rounded-full bg-[#002045] px-5 text-sm font-semibold text-white"
+        >
+          Ver seguridad y normatividad
+        </Link>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {items.map((item) => (
             <div key={item.label} data-reveal className="p-6 bg-white rounded-2xl border border-[#c4c6cf]/30 flex flex-col items-center">
@@ -509,6 +515,7 @@ function Footer() {
           <h5 className="font-bold mb-6">Legal</h5>
           <ul className="space-y-4 text-sm opacity-70">
             <li><Link href="/politica-privacidad" className="hover:opacity-100 transition-opacity">Privacidad</Link></li>
+            <li><Link href="/seguridad-informacion-medica" className="hover:opacity-100 transition-opacity">Seguridad médica</Link></li>
             <li><a className="hover:opacity-100 transition-opacity" href="#">Términos</a></li>
             <li><a className="hover:opacity-100 transition-opacity" href="#">Cookies</a></li>
           </ul>
