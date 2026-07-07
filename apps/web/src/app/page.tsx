@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ShieldLogo } from "@/components/ShieldLogo";
 
 export default function LandingPage() {
   useEffect(() => {
@@ -55,14 +56,7 @@ function Header() {
 
   return (
     <header className="fixed top-0 w-full z-50 glass-header shadow-sm h-16 flex justify-between items-center px-4 md:px-12">
-      <div className="flex items-center gap-2">
-        <span className="material-symbols-outlined text-[#003A7A] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-          shield_with_heart
-        </span>
-        <h1 className="font-bold text-[#003A7A] text-lg md:text-xl font-[Atkinson_Hyperlegible_Next]">
-          MiSalud FamilIA
-        </h1>
-      </div>
+      <ShieldLogo size={32} />
       <nav className="hidden md:flex gap-8 items-center">
         <a className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="#solucion">Solución</a>
         <Link className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="/seguridad-informacion-medica">Seguridad</Link>
@@ -491,12 +485,7 @@ function Footer() {
     <footer className="bg-[#003A7A] text-white py-16 px-4 md:px-12">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="md:col-span-1">
-          <div className="flex items-center gap-2 mb-6">
-            <span className="material-symbols-outlined text-[#A5EDE8] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-              shield_with_heart
-            </span>
-            <h2 className="font-bold text-xl">MiSalud FamilIA</h2>
-          </div>
+          <ShieldLogo size={30} dark className="mb-6" />
           <p className="text-sm opacity-70 leading-relaxed">
             La plataforma digital líder para la gestión y protección de la información médica familiar.
           </p>

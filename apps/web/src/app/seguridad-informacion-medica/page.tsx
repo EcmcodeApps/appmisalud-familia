@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
+import { ShieldLogo } from "@/components/ShieldLogo";
 
 export const metadata: Metadata = {
-  title: "Seguridad de la informacion medica | AppMiSalud Familia",
+  title: "Seguridad de la informacion medica | MiSalud FamilIA",
   description:
-    "Como AppMiSalud Familia protege datos personales sensibles de salud bajo principios de la normatividad colombiana.",
+    "Como MiSalud FamilIA protege datos personales sensibles de salud bajo principios de la normatividad colombiana.",
 };
 
 const legalFramework = [
@@ -85,17 +86,14 @@ export default function MedicalSecurityPage() {
     <main className="min-h-screen bg-[#f7fafc] text-[#181c1e]">
       <header className="border-b border-[#dfe3e8] bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-12">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-3xl text-[#002045]" style={{ fontVariationSettings: "'FILL' 1" }}>
-              shield_with_heart
-            </span>
-            <span className="font-bold text-[#002045]">AppMiSalud Familia</span>
+          <Link href="/" aria-label="Ir al inicio de MiSalud FamilIA">
+            <ShieldLogo size={32} />
           </Link>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="hidden text-sm font-semibold text-[#13696a] md:inline-flex">
+            <Link href="/login" className="hidden text-sm font-semibold text-[#00B8A9] md:inline-flex">
               Iniciar sesion
             </Link>
-            <Link href="/register" className="rounded-full bg-[#002045] px-5 py-2 text-sm font-semibold text-white">
+            <Link href="/register" className="rounded-full bg-[#003A7A] px-5 py-2 text-sm font-semibold text-white">
               Crear cuenta
             </Link>
           </div>
@@ -104,29 +102,29 @@ export default function MedicalSecurityPage() {
 
       <section className="mx-auto grid max-w-7xl gap-10 px-4 py-12 md:grid-cols-[1.1fr_0.9fr] md:px-12 md:py-20">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#a2eded]/45 px-4 py-2 text-xs font-bold uppercase tracking-wide text-[#13696a]">
+          <span className="inline-flex items-center gap-2 rounded-full bg-[#B3EDE8]/45 px-4 py-2 text-xs font-bold uppercase tracking-wide text-[#00B8A9]">
             <span className="material-symbols-outlined text-[18px]">gavel</span>
             Normatividad colombiana y datos sensibles
           </span>
-          <h1 className="mt-6 text-4xl font-bold leading-tight text-[#002045] md:text-6xl" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
+          <h1 className="mt-6 text-4xl font-bold leading-tight text-[#003A7A] md:text-6xl" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
             Seguridad de la informacion medica familiar
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#42474e]">
-            AppMiSalud Familia esta disenada para tratar informacion de salud como dato personal sensible. Esta pagina explica, en lenguaje claro, los principios que guian la recoleccion, custodia, uso y eliminacion de informacion medica dentro de la aplicacion.
+            MiSalud FamilIA esta disenada para tratar informacion de salud como dato personal sensible. Esta pagina explica, en lenguaje claro, los principios que guian la recoleccion, custodia, uso y eliminacion de informacion medica dentro de la aplicacion.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/register" className="inline-flex h-12 items-center justify-center rounded-full bg-[#002045] px-6 text-sm font-bold text-white">
+            <Link href="/register" className="inline-flex h-12 items-center justify-center rounded-full bg-[#003A7A] px-6 text-sm font-bold text-white">
               Crear boveda segura
             </Link>
-            <a href="#marco-legal" className="inline-flex h-12 items-center justify-center rounded-full border-2 border-[#13696a] px-6 text-sm font-bold text-[#13696a]">
+            <a href="#marco-legal" className="inline-flex h-12 items-center justify-center rounded-full border-2 border-[#00B8A9] px-6 text-sm font-bold text-[#00B8A9]">
               Ver marco legal
             </a>
           </div>
         </div>
 
         <aside className="rounded-3xl border border-[#dfe3e8] bg-white p-6 shadow-[0px_4px_20px_rgba(26,54,93,0.08)]">
-          <div className="rounded-2xl bg-[#002045] p-5 text-white">
-            <span className="material-symbols-outlined text-5xl text-[#a5eff0]">health_and_safety</span>
+          <div className="rounded-2xl bg-[#003A7A] p-5 text-white">
+            <span className="material-symbols-outlined text-5xl text-[#B3EDE8]">health_and_safety</span>
             <h2 className="mt-4 text-2xl font-bold">Principio central</h2>
             <p className="mt-3 text-sm leading-6 text-[#d6e3ff]">
               Los datos de salud requieren un nivel reforzado de cuidado. Por eso el acceso debe ser autenticado, la finalidad debe ser clara y el usuario debe mantener control sobre su informacion.
@@ -135,8 +133,8 @@ export default function MedicalSecurityPage() {
           <div className="mt-5 grid gap-3">
             {["Dato sensible", "Autorizacion expresa", "Acceso controlado", "IA no diagnostica"].map((item) => (
               <div key={item} className="flex items-center gap-3 rounded-xl bg-[#f1f4f6] p-3">
-                <span className="material-symbols-outlined text-[#13696a]">check_circle</span>
-                <span className="text-sm font-semibold text-[#002045]">{item}</span>
+                <span className="material-symbols-outlined text-[#00B8A9]">check_circle</span>
+                <span className="text-sm font-semibold text-[#003A7A]">{item}</span>
               </div>
             ))}
           </div>
@@ -146,7 +144,7 @@ export default function MedicalSecurityPage() {
       <section id="marco-legal" className="bg-white py-14">
         <div className="mx-auto max-w-7xl px-4 md:px-12">
           <div className="max-w-3xl">
-            <h2 className="text-3xl font-bold text-[#002045]">Marco legal de referencia</h2>
+            <h2 className="text-3xl font-bold text-[#003A7A]">Marco legal de referencia</h2>
             <p className="mt-3 text-[#42474e]">
               Esta pagina no sustituye asesoria juridica. Resume normas relevantes para orientar el diseno de seguridad, privacidad y consentimiento de la app.
             </p>
@@ -158,9 +156,9 @@ export default function MedicalSecurityPage() {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-2xl border border-[#dfe3e8] bg-[#f8fafb] p-5 transition hover:border-[#13696a] hover:bg-[#a2eded]/10">
-                <p className="text-xs font-bold uppercase tracking-wide text-[#13696a]">{item.law}</p>
-                <h3 className="mt-2 text-lg font-bold text-[#002045]">{item.title}</h3>
+                className="rounded-2xl border border-[#dfe3e8] bg-[#f8fafb] p-5 transition hover:border-[#00B8A9] hover:bg-[#B3EDE8]/10">
+                <p className="text-xs font-bold uppercase tracking-wide text-[#00B8A9]">{item.law}</p>
+                <h3 className="mt-2 text-lg font-bold text-[#003A7A]">{item.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-[#42474e]">{item.summary}</p>
               </a>
             ))}
@@ -169,32 +167,32 @@ export default function MedicalSecurityPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-14 md:px-12">
-        <h2 className="text-3xl font-bold text-[#002045]">Como se traduce esto en la app</h2>
+        <h2 className="text-3xl font-bold text-[#003A7A]">Como se traduce esto en la app</h2>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {principles.map((item) => (
             <article key={item.title} className="rounded-2xl border border-[#dfe3e8] bg-white p-5 shadow-[0px_4px_20px_rgba(26,54,93,0.06)]">
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[#a2eded]/35">
-                <span className="material-symbols-outlined text-[#13696a]">{item.icon}</span>
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[#B3EDE8]/35">
+                <span className="material-symbols-outlined text-[#00B8A9]">{item.icon}</span>
               </div>
-              <h3 className="text-lg font-bold text-[#002045]">{item.title}</h3>
+              <h3 className="text-lg font-bold text-[#003A7A]">{item.title}</h3>
               <p className="mt-2 text-sm leading-6 text-[#42474e]">{item.text}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="bg-[#002045] py-14 text-white">
+      <section className="bg-[#003A7A] py-14 text-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 md:grid-cols-2 md:px-12">
           <div>
             <h2 className="text-3xl font-bold">Derechos del usuario sobre sus datos</h2>
             <p className="mt-4 leading-7 text-[#d6e3ff]">
-              AppMiSalud Familia debe facilitar canales para que cada titular ejerza control sobre sus datos personales y medicos.
+              MiSalud FamilIA debe facilitar canales para que cada titular ejerza control sobre sus datos personales y medicos.
             </p>
           </div>
           <ul className="grid gap-3">
             {rights.map((right) => (
               <li key={right} className="flex gap-3 rounded-xl bg-white/8 p-3">
-                <span className="material-symbols-outlined text-[#a5eff0]">done</span>
+                <span className="material-symbols-outlined text-[#B3EDE8]">done</span>
                 <span className="text-sm leading-6 text-[#eef1f3]">{right}</span>
               </li>
             ))}
@@ -212,8 +210,8 @@ export default function MedicalSecurityPage() {
             </p>
           </article>
           <article className="rounded-3xl border border-[#dfe3e8] bg-white p-6">
-            <span className="material-symbols-outlined text-4xl text-[#13696a]">admin_panel_settings</span>
-            <h2 className="mt-4 text-2xl font-bold text-[#002045]">Compromisos operativos</h2>
+            <span className="material-symbols-outlined text-4xl text-[#00B8A9]">admin_panel_settings</span>
+            <h2 className="mt-4 text-2xl font-bold text-[#003A7A]">Compromisos operativos</h2>
             <p className="mt-3 leading-7 text-[#42474e]">
               La plataforma debe mantener reglas de acceso, minimizacion de datos, control de sesiones, trazabilidad de acciones sensibles y actualizacion continua de politicas de privacidad.
             </p>
@@ -223,8 +221,8 @@ export default function MedicalSecurityPage() {
 
       <footer className="border-t border-[#dfe3e8] bg-white px-4 py-8 md:px-12">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 text-sm text-[#42474e] md:flex-row md:items-center md:justify-between">
-          <p>© 2026 AppMiSalud Familia. Informacion orientativa, no asesoria juridica.</p>
-          <Link href="/" className="font-semibold text-[#13696a]">
+          <p>Â© 2026 MiSalud FamilIA. Informacion orientativa, no asesoria juridica.</p>
+          <Link href="/" className="font-semibold text-[#00B8A9]">
             Volver al inicio
           </Link>
         </div>
@@ -232,3 +230,4 @@ export default function MedicalSecurityPage() {
     </main>
   );
 }
+
