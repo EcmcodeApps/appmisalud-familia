@@ -45,6 +45,7 @@ export default function LandingPage() {
         <CtaSection />
       </main>
       <Footer />
+      <WhatsAppBubble />
       <MobileNav />
       <MobileFab />
     </div>
@@ -639,9 +640,14 @@ function CtaSection() {
           >
             Empezar Gratis
           </Link>
-          <button className="bg-white text-[#003A7A] h-16 px-12 rounded-2xl font-semibold text-lg border border-[#c4c6cf] medical-vault-shadow hover:bg-[#f1f4f6] transition-all flex items-center justify-center">
+          <a
+            href="https://wa.me/573124020210?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20MiSalud%20FamilIA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white text-[#003A7A] h-16 px-12 rounded-2xl font-semibold text-lg border border-[#c4c6cf] medical-vault-shadow hover:bg-[#f1f4f6] transition-all flex items-center justify-center"
+          >
             Hablar con Soporte
-          </button>
+          </a>
         </div>
       </div>
     </section>
@@ -736,5 +742,35 @@ function MobileFab() {
         <span className="material-symbols-outlined text-3xl">add</span>
       </Link>
     </div>
+  );
+}
+
+function WhatsAppBubble() {
+  return (
+    <a
+      href="https://wa.me/573124020210?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20MiSalud%20FamilIA"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp al 3124020210"
+      className="group fixed bottom-24 left-4 z-[70] flex items-center gap-3 rounded-full bg-[#25D366] px-3 py-3 text-white shadow-[0_14px_35px_rgba(37,211,102,0.38)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(37,211,102,0.48)] md:bottom-6 md:left-auto md:right-6 md:px-4"
+    >
+      <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-[#25D366]/45" />
+      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#25D366]">
+        <WhatsAppIcon />
+      </span>
+      <span className="hidden pr-2 text-left md:block">
+        <span className="block text-xs font-bold uppercase tracking-wide text-white/80">WhatsApp</span>
+        <span className="block text-sm font-bold">312 402 0210</span>
+      </span>
+      <span className="sr-only">3124020210</span>
+    </a>
+  );
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg aria-hidden="true" className="h-7 w-7" viewBox="0 0 32 32" fill="currentColor">
+      <path d="M16.02 3.2A12.72 12.72 0 0 0 5.1 22.45L3.5 28.8l6.5-1.54A12.72 12.72 0 1 0 16.02 3.2Zm0 23.12a10.4 10.4 0 0 1-5.3-1.45l-.38-.23-3.86.91 1.03-3.76-.25-.39a10.39 10.39 0 1 1 8.76 4.92Zm5.96-7.78c-.33-.16-1.94-.96-2.24-1.07-.3-.11-.52-.16-.74.16-.22.33-.85 1.07-1.04 1.29-.19.22-.38.25-.71.08-.33-.16-1.39-.51-2.65-1.63-.98-.87-1.64-1.95-1.83-2.28-.19-.33-.02-.51.14-.67.15-.15.33-.38.49-.57.16-.19.22-.33.33-.55.11-.22.05-.41-.03-.57-.08-.16-.74-1.78-1.01-2.44-.27-.64-.54-.55-.74-.56h-.63c-.22 0-.57.08-.87.41-.3.33-1.14 1.12-1.14 2.72 0 1.6 1.17 3.15 1.33 3.37.16.22 2.3 3.51 5.57 4.92.78.34 1.39.54 1.86.69.78.25 1.49.21 2.05.13.63-.09 1.94-.79 2.21-1.56.27-.77.27-1.43.19-1.56-.08-.14-.3-.22-.63-.38Z" />
+    </svg>
   );
 }
