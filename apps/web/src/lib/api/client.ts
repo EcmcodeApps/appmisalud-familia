@@ -75,6 +75,13 @@ export interface AdminSubscriptionUpdateResponse {
   };
 }
 
+export interface AdminMeResponse {
+  ok: boolean;
+  uid: string;
+  email?: string;
+  role: "admin" | "owner" | string;
+}
+
 // ── Endpoints ──────────────────────────────────────────────────────────────
 
 /**
@@ -138,4 +145,8 @@ export async function updateAdminSubscription(params: {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(params),
   });
+}
+
+export async function getAdminMe(): Promise<AdminMeResponse> {
+  return request<AdminMeResponse>("/admin/me");
 }

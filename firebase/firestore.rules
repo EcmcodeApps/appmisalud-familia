@@ -2,57 +2,107 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── Helpers ────────────────────────────────────────────────────────────
     function isOwner(uid) {
       return request.auth != null && request.auth.uid == uid;
     }
 
-    // ── Perfil del usuario ──────────────────────────────────────────────────
-    match /users/{uid} {
-      allow read, write: if isOwner(uid);
+    function changedKeys() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
 
-      // ── Personas (miembros de la familia) ──────────────────────────────
+    function userCreateIsSafe(uid) {
+      return isOwner(uid)
+        && request.resource.data.uid == uid
+        && request.resource.data.role == "user"
+        && request.resource.data.accountStatus == "active"
+        && request.resource.data.plan == "free_trial"
+        && request.resource.data.subscriptionStatus == "trial"
+        && request.resource.data.keys().hasOnly([
+          "uid", "email", "displayName", "photoURL",
+          "createdAt", "updatedAt",
+          "onboardingCompleted", "onboarding_completed",
+          "trialStartedAt", "trialEndsAt",
+          "subscriptionStatus", "plan", "limits", "usage",
+          "role", "accountStatus", "consent", "settings"
+        ]);
+    }
+
+    function userUpdateIsSafe(uid) {
+      return isOwner(uid)
+        && !changedKeys().hasAny([
+          "uid", "email", "role", "accountStatus",
+          "plan", "subscriptionStatus", "limits", "billing",
+          "trialStartedAt", "trialEndsAt", "createdAt"
+        ])
+        && changedKeys().hasOnly([
+          "displayName", "photoURL", "updatedAt",
+          "onboardingCompleted", "onboarding_completed",
+          "consent", "settings", "usage"
+        ])
+        && (
+          !changedKeys().hasAny(["usage"])
+          || (
+            !("usage" in resource.data)
+            && request.resource.data.usage.documentCount >= 0
+            && request.resource.data.usage.storageBytesUsed >= 0
+            && request.resource.data.usage.aiRequestsMonth >= 0
+            && request.resource.data.usage.aiTokensUsedMonth >= 0
+          )
+          || (
+            "usage" in resource.data
+            && request.resource.data.usage.documentCount >= resource.data.usage.documentCount
+            && request.resource.data.usage.storageBytesUsed >= resource.data.usage.storageBytesUsed
+            && request.resource.data.usage.aiRequestsMonth >= resource.data.usage.aiRequestsMonth
+            && request.resource.data.usage.aiTokensUsedMonth >= resource.data.usage.aiTokensUsedMonth
+          )
+        );
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if userCreateIsSafe(uid);
+      allow update: if userUpdateIsSafe(uid);
+      allow delete: if false;
+
       match /personas/{personaId} {
         allow read, write: if isOwner(uid);
       }
 
-      // ── Documentos médicos ─────────────────────────────────────────────
       match /documents/{documentId} {
-        allow read:   if isOwner(uid);
-        allow create: if isOwner(uid);
-        allow update: if isOwner(uid);
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid)
+          && request.resource.data.fileSizeBytes is int
+          && request.resource.data.fileSizeBytes <= 20 * 1024 * 1024;
+        allow update: if isOwner(uid)
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+            "ownerUid", "downloadURL", "storagePath", "fileSizeBytes"
+          ]);
         allow delete: if isOwner(uid);
 
-        // Notas del gestor/cuidador
         match /notes/{noteId} {
           allow read, write: if isOwner(uid);
         }
       }
 
-      // ── Compartir bóveda ───────────────────────────────────────────────
       match /shares/{shareId} {
         allow read, write: if isOwner(uid);
       }
 
-      // ── Resúmenes de emergencia ────────────────────────────────────────
       match /summaries/{summaryId} {
         allow read, write: if isOwner(uid);
       }
 
-      // ── Logs de auditoría (solo backend escribe) ───────────────────────
       match /auditLogs/{logId} {
-        allow read:  if isOwner(uid);
+        allow read: if isOwner(uid);
         allow write: if false;
       }
 
-      // ── Logs de uso IA (solo backend escribe) ─────────────────────────
       match /aiUsageLogs/{logId} {
-        allow read:  if isOwner(uid);
+        allow read: if isOwner(uid);
         allow write: if false;
       }
     }
 
-    // ── Bloquear todo lo demás ─────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }

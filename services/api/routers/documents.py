@@ -13,11 +13,18 @@ from core.config import get_settings
 from models.documents import ExtractResponse
 
 router = APIRouter(prefix="/documents", tags=["documents"])
+ALLOWED_CONTENT_TYPES = {"application/pdf", "image/jpeg", "image/png", "image/jpg"}
+MAX_PDF_PAGES = 25
+MAX_IMAGE_PIXELS = 16_000_000
 
 
 def _extract_pdf(data: bytes) -> tuple[str, int]:
     from pypdf import PdfReader
     reader = PdfReader(io.BytesIO(data))
+    if reader.is_encrypted:
+        raise HTTPException(422, "No se aceptan PDFs cifrados o protegidos.")
+    if len(reader.pages) > MAX_PDF_PAGES:
+        raise HTTPException(413, f"PDF con mas de {MAX_PDF_PAGES} paginas.")
     pages = [p.extract_text() or "" for p in reader.pages]
     return "\n".join(pages), len(reader.pages)
 
@@ -27,7 +34,14 @@ def _extract_image_ocr(data: bytes) -> str:
         import pytesseract
         from PIL import Image
         img = Image.open(io.BytesIO(data))
+        img.verify()
+        img = Image.open(io.BytesIO(data))
+        width, height = img.size
+        if width * height > MAX_IMAGE_PIXELS:
+            raise HTTPException(413, "Imagen demasiado grande para OCR.")
         return pytesseract.image_to_string(img, lang="spa")
+    except HTTPException:
+        raise
     except Exception:
         return ""
 
@@ -49,6 +63,8 @@ async def extract_document(
 
     content_type = file.content_type or ""
     filename = file.filename or "doc"
+    if content_type not in ALLOWED_CONTENT_TYPES:
+        raise HTTPException(415, "Tipo de archivo no permitido.")
 
     # Extraer texto
     extracted = ""

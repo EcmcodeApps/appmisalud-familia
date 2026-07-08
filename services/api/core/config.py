@@ -32,10 +32,15 @@ class Settings(BaseSettings):
 
     max_upload_mb: int = 20
     rate_limit_per_minute: int = 30
+    admin_owner_emails: str = ""
 
     @property
     def allowed_origins(self) -> list[str]:
         return [o.strip() for o in self.api_allowed_origins.split(",")]
+
+    @property
+    def owner_emails(self) -> set[str]:
+        return {email.strip().lower() for email in self.admin_owner_emails.split(",") if email.strip()}
 
     class Config:
         env_file = ".env"

@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from firebase_admin import auth as firebase_auth, firestore
 from pydantic import BaseModel, Field, model_validator
 
+from core.config import get_settings
 from core.firebase import get_auth, get_firestore
 from core.security import verify_firebase_token
 
@@ -66,19 +67,20 @@ class SubscriptionUpdateResponse(BaseModel):
     limits: dict[str, int]
 
 
+class AdminMeResponse(BaseModel):
+    ok: bool
+    uid: str
+    email: str | None = None
+    role: str
+
+
 async def require_admin(decoded_token: dict = Depends(verify_firebase_token)) -> dict:
     role = decoded_token.get("role")
     if role in {"admin", "owner"} or decoded_token.get("admin") is True or decoded_token.get("owner") is True:
         return decoded_token
 
-    uid = decoded_token.get("uid")
-    if not uid:
-        raise HTTPException(status_code=403, detail="Acceso administrativo requerido")
-
-    db = get_firestore()
-    snap = db.collection("users").document(uid).get()
-    data = snap.to_dict() if snap.exists else {}
-    if data.get("role") in {"admin", "owner"}:
+    email = (decoded_token.get("email") or "").lower()
+    if email and email in get_settings().owner_emails:
         return decoded_token
 
     raise HTTPException(status_code=403, detail="Acceso administrativo requerido")
@@ -92,6 +94,19 @@ def resolve_target_user(payload: SubscriptionUpdateRequest) -> firebase_auth.Use
         return admin_auth.get_user_by_email(payload.target_email or "")
     except Exception:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+
+@router.get("/me", response_model=AdminMeResponse)
+async def admin_me(admin_token: dict = Depends(require_admin)):
+    role = admin_token.get("role")
+    if role not in {"admin", "owner"}:
+        role = "owner" if (admin_token.get("email") or "").lower() in get_settings().owner_emails else "admin"
+    return AdminMeResponse(
+        ok=True,
+        uid=admin_token.get("uid", ""),
+        email=admin_token.get("email"),
+        role=role,
+    )
 
 
 @router.post("/subscriptions/update", response_model=SubscriptionUpdateResponse)
