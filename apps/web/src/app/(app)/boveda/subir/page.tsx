@@ -3,12 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  collection, addDoc, getDocs, serverTimestamp, query, orderBy, doc, increment, setDoc,
+  collection, addDoc, getDoc, getDocs, serverTimestamp, query, orderBy, doc, increment, setDoc,
 } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { db, storage, auth } from "@/lib/firebase/config";
 import { extractDocument } from "@/lib/api/client";
-import { DEFAULT_USAGE } from "@/lib/subscription/plans";
+import { ensureTrialForUser } from "@/lib/subscription/trial";
+import {
+  DEFAULT_USAGE,
+  evaluateUploadAllowance,
+  formatBytes,
+  getPlanDefinition,
+  normalizeUsage,
+  type UploadAllowance,
+  type UsageCounters,
+} from "@/lib/subscription/plans";
 
 const DOC_TYPES = [
   "Resultado de Laboratorio",
@@ -23,6 +32,7 @@ const DOC_TYPES = [
 interface PersonaOption { id: string; name: string; role: string; }
 
 type UploadMode = "pdf" | "image" | "camera" | "scan";
+type PlanSnapshot = { plan: string; label: string; usage: UsageCounters; subscriptionStatus?: string };
 
 export default function SubirDocumentoPage() {
   const router = useRouter();
@@ -42,6 +52,9 @@ export default function SubirDocumentoPage() {
   const [uploading, setUploading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const [planSnapshot, setPlanSnapshot] = useState<PlanSnapshot | null>(null);
+  const [allowance, setAllowance] = useState<UploadAllowance | null>(null);
+  const [checkingLimits, setCheckingLimits] = useState(false);
 
   // Load personas from Firestore
   useEffect(() => {
@@ -58,6 +71,40 @@ export default function SubirDocumentoPage() {
         if (list.length > 0) setSelectedPersona(list[0].id);
       });
   }, []);
+
+  useEffect(() => {
+    let alive = true;
+    const uid = auth.currentUser?.uid;
+    if (!uid || !file) {
+      setAllowance(null);
+      return;
+    }
+
+    setCheckingLimits(true);
+    loadPlanSnapshot(uid)
+      .then((snapshot) => {
+        if (!alive) return;
+        const nextAllowance = evaluateUploadAllowance({
+          plan: snapshot.plan,
+          usage: snapshot.usage,
+          fileSizeBytes: file.size,
+          aiProcess,
+          subscriptionStatus: snapshot.subscriptionStatus,
+        });
+        setPlanSnapshot(snapshot);
+        setAllowance(nextAllowance);
+      })
+      .catch(() => {
+        if (alive) setAllowance(null);
+      })
+      .finally(() => {
+        if (alive) setCheckingLimits(false);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, [file, aiProcess]);
 
   function triggerUpload(mode: UploadMode) {
     if (!fileInputRef.current) return;
@@ -86,6 +133,22 @@ export default function SubirDocumentoPage() {
     if (!uid) { router.replace("/login"); return; }
 
     setError("");
+    const currentSnapshot = planSnapshot ?? await loadPlanSnapshot(uid);
+    const currentAllowance = evaluateUploadAllowance({
+      plan: currentSnapshot.plan,
+      usage: currentSnapshot.usage,
+      fileSizeBytes: file.size,
+      aiProcess,
+      subscriptionStatus: currentSnapshot.subscriptionStatus,
+    });
+    setPlanSnapshot(currentSnapshot);
+    setAllowance(currentAllowance);
+
+    if (!currentAllowance.allowed) {
+      setError(currentAllowance.message);
+      return;
+    }
+
     setUploading(true);
 
     const ext = file.name.split(".").pop();
@@ -185,12 +248,16 @@ export default function SubirDocumentoPage() {
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[#00B8A9]"
             style={{ backgroundColor: "rgba(162,237,237,0.15)" }}>
             <span className="material-symbols-outlined text-[#00B8A9]">attach_file</span>
-            <span className="text-sm font-semibold text-[#003A7A] truncate flex-1">{file.name}</span>
+            <span className="text-sm font-semibold text-[#003A7A] truncate flex-1">{file.name} · {formatBytes(file.size)}</span>
             <button onClick={() => setFile(null)}
               className="material-symbols-outlined text-[#74777f] text-[18px] hover:text-[#ba1a1a]">
               close
             </button>
           </div>
+        )}
+
+        {file && (
+          <LimitPreview allowance={allowance} checking={checkingLimits} plan={planSnapshot} />
         )}
 
         {/* Form */}
@@ -311,7 +378,7 @@ export default function SubirDocumentoPage() {
 
             {/* Submit */}
             <div className="md:col-span-2 space-y-3 pt-2">
-              <button type="submit" disabled={uploading}
+              <button type="submit" disabled={uploading || allowance?.allowed === false}
                 className="w-full h-14 text-white font-semibold text-base rounded-full flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-60"
                 style={{ backgroundColor: "#003A7A", boxShadow: "0 4px 20px rgba(0,32,69,0.2)" }}>
                 {uploading ? (
@@ -392,6 +459,89 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     <div className="space-y-1">
       <label className="text-sm font-semibold text-[#43474e]">{label}</label>
       {children}
+    </div>
+  );
+}
+
+async function loadPlanSnapshot(uid: string): Promise<PlanSnapshot> {
+  const [trial, profileSnap, docsSnap] = await Promise.all([
+    ensureTrialForUser(uid).catch(() => null),
+    getDoc(doc(db, "users", uid)),
+    getDocs(collection(db, "users", uid, "documents")),
+  ]);
+
+  const profile = profileSnap.exists() ? profileSnap.data() : {};
+  const plan = getPlanDefinition(profile.plan ?? trial?.plan ?? "free_trial");
+  const storedUsage = normalizeUsage(profile.usage);
+  const measuredDocumentCount = docsSnap.size;
+  const measuredStorageBytes = docsSnap.docs.reduce((sum, item) => {
+    const data = item.data();
+    return sum + Number(data.fileSizeBytes ?? data.fileSize ?? data.size ?? 0);
+  }, 0);
+
+  return {
+    plan: plan.id,
+    label: plan.label,
+    subscriptionStatus: String(profile.subscriptionStatus ?? trial?.status ?? "trial"),
+    usage: {
+      ...storedUsage,
+      documentCount: Math.max(storedUsage.documentCount, measuredDocumentCount),
+      storageBytesUsed: Math.max(storedUsage.storageBytesUsed, measuredStorageBytes),
+    },
+  };
+}
+
+function LimitPreview({ allowance, checking, plan }: { allowance: UploadAllowance | null; checking: boolean; plan: PlanSnapshot | null }) {
+  if (checking) {
+    return (
+      <div className="rounded-2xl border border-[#c4c6cf] bg-white p-4 text-sm text-[#43474e] shadow-[0px_4px_20px_rgba(26,54,93,0.08)]">
+        Verificando limites del plan...
+      </div>
+    );
+  }
+
+  if (!allowance || !plan) return null;
+
+  const isBlocked = allowance.level === "blocked";
+  const isWarning = allowance.level === "warning";
+  const color = isBlocked ? "#ba1a1a" : isWarning ? "#b26a00" : "#13696a";
+  const bg = isBlocked ? "#ffdad6" : isWarning ? "#fff3cd" : "#d7f5f1";
+
+  return (
+    <section className="rounded-2xl border bg-white p-4 shadow-[0px_4px_20px_rgba(26,54,93,0.08)]" style={{ borderColor: color }}>
+      <div className="flex items-start gap-3">
+        <span className="material-symbols-outlined mt-0.5" style={{ color }}>
+          {isBlocked ? "block" : isWarning ? "warning" : "check_circle"}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="font-bold text-[#003A7A]">{allowance.title}</p>
+            <span className="rounded-full px-2 py-0.5 text-xs font-bold" style={{ backgroundColor: bg, color }}>
+              {plan.label}
+            </span>
+          </div>
+          <p className="mt-1 text-sm text-[#43474e]">{allowance.message}</p>
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <MiniBar label="Documentos" percent={allowance.documentPercentAfter} color={color} />
+            <MiniBar label="Almacenamiento" percent={allowance.storagePercentAfter} color={color} />
+            <MiniBar label="IA mensual" percent={allowance.aiRequestsPercentAfter} color={color} />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MiniBar({ label, percent, color }: { label: string; percent: number; color: string }) {
+  return (
+    <div>
+      <div className="mb-1 flex items-center justify-between text-xs font-semibold text-[#43474e]">
+        <span>{label}</span>
+        <span>{percent}%</span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-[#e0e3e5]">
+        <div className="h-full rounded-full" style={{ width: `${percent}%`, backgroundColor: color }} />
+      </div>
     </div>
   );
 }

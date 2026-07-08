@@ -25,6 +25,16 @@ export interface PlanLimits {
   maxAiRequestsMonth: number;
 }
 
+export interface UploadAllowance {
+  allowed: boolean;
+  level: "ok" | "warning" | "blocked";
+  title: string;
+  message: string;
+  documentPercentAfter: number;
+  storagePercentAfter: number;
+  aiRequestsPercentAfter: number;
+}
+
 const GB = 1024 * 1024 * 1024;
 
 export const PLAN_DEFINITIONS: Record<PlanId, PlanDefinition> = {
@@ -126,4 +136,93 @@ export function formatBytes(bytes: number): string {
 
 export function formatNumber(value: number): string {
   return new Intl.NumberFormat("es-CO").format(value);
+}
+
+export function evaluateUploadAllowance(params: {
+  plan: unknown;
+  usage: UsageCounters;
+  fileSizeBytes: number;
+  aiProcess: boolean;
+  subscriptionStatus?: string;
+}): UploadAllowance {
+  const plan = getPlanDefinition(params.plan);
+  const documentCountAfter = params.usage.documentCount + 1;
+  const storageBytesAfter = params.usage.storageBytesUsed + params.fileSizeBytes;
+  const aiRequestsAfter = params.usage.aiRequestsMonth + (params.aiProcess ? 1 : 0);
+  const documentPercentAfter = usagePercent(documentCountAfter, plan.maxDocuments);
+  const storagePercentAfter = usagePercent(storageBytesAfter, plan.maxStorageBytes);
+  const aiRequestsPercentAfter = usagePercent(aiRequestsAfter, plan.maxAiRequestsMonth);
+
+  if (params.subscriptionStatus === "trial_expired" && plan.id === "free_trial") {
+    return {
+      allowed: false,
+      level: "blocked",
+      title: "Prueba gratuita finalizada",
+      message: "Para seguir subiendo documentos, activa un plan economico, familiar o premium.",
+      documentPercentAfter,
+      storagePercentAfter,
+      aiRequestsPercentAfter,
+    };
+  }
+
+  if (documentCountAfter > plan.maxDocuments) {
+    return {
+      allowed: false,
+      level: "blocked",
+      title: "Limite de documentos alcanzado",
+      message: `Tu plan ${plan.label} permite hasta ${formatNumber(plan.maxDocuments)} documentos.`,
+      documentPercentAfter,
+      storagePercentAfter,
+      aiRequestsPercentAfter,
+    };
+  }
+
+  if (storageBytesAfter > plan.maxStorageBytes) {
+    return {
+      allowed: false,
+      level: "blocked",
+      title: "Limite de almacenamiento alcanzado",
+      message: `Este archivo supera el espacio disponible. Te quedan ${formatBytes(Math.max(0, plan.maxStorageBytes - params.usage.storageBytesUsed))}.`,
+      documentPercentAfter,
+      storagePercentAfter,
+      aiRequestsPercentAfter,
+    };
+  }
+
+  if (params.aiProcess && aiRequestsAfter > plan.maxAiRequestsMonth) {
+    return {
+      allowed: false,
+      level: "blocked",
+      title: "Limite mensual de IA alcanzado",
+      message: "Puedes subir el documento desactivando el procesamiento con IA, o cambiar a un plan superior.",
+      documentPercentAfter,
+      storagePercentAfter,
+      aiRequestsPercentAfter,
+    };
+  }
+
+  const remainingStorage = plan.maxStorageBytes - storageBytesAfter;
+  const nearLimit = documentPercentAfter >= 85 || storagePercentAfter >= 85 || aiRequestsPercentAfter >= 85;
+
+  if (nearLimit) {
+    return {
+      allowed: true,
+      level: "warning",
+      title: "Estas cerca del limite de tu plan",
+      message: `La carga se permite, pero despues quedaran ${formatBytes(remainingStorage)} disponibles.`,
+      documentPercentAfter,
+      storagePercentAfter,
+      aiRequestsPercentAfter,
+    };
+  }
+
+  return {
+    allowed: true,
+    level: "ok",
+    title: "Carga permitida",
+    message: `Despues de subir este archivo quedaran ${formatBytes(remainingStorage)} disponibles.`,
+    documentPercentAfter,
+    storagePercentAfter,
+    aiRequestsPercentAfter,
+  };
 }
