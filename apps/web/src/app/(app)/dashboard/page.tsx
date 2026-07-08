@@ -1,200 +1,328 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { auth } from "@/lib/firebase/config";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase/config";
+import { onAuthChange } from "@/lib/firebase/auth";
+import { ensureTrialForUser, type TrialInfo, toDate } from "@/lib/subscription/trial";
+import {
+  formatBytes,
+  formatNumber,
+  getPlanDefinition,
+  getPlanLimits,
+  normalizeUsage,
+  usagePercent,
+  type PlanDefinition,
+  type UsageCounters,
+} from "@/lib/subscription/plans";
+
+interface RecentDocument {
+  id: string;
+  title: string;
+  meta: string;
+  sizeBytes: number;
+  createdAtMs: number;
+}
+
+const EMPTY_USAGE: UsageCounters = {
+  documentCount: 0,
+  storageBytesUsed: 0,
+  aiTokensUsedMonth: 0,
+  aiRequestsMonth: 0,
+};
 
 export default function DashboardPage() {
   const [displayName, setDisplayName] = useState("Usuario");
+  const [loading, setLoading] = useState(true);
+  const [trial, setTrial] = useState<TrialInfo | null>(null);
+  const [plan, setPlan] = useState<PlanDefinition>(() => getPlanDefinition("free_trial"));
+  const [usage, setUsage] = useState<UsageCounters>(EMPTY_USAGE);
+  const [recentDocs, setRecentDocs] = useState<RecentDocument[]>([]);
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user?.displayName) setDisplayName(user.displayName.split(" ")[0]);
+    let alive = true;
+
+    const unsubscribe = onAuthChange(async (user) => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      setDisplayName(user.displayName?.split(" ")[0] || user.email?.split("@")[0] || "Usuario");
+
+      try {
+        const [trialInfo, profileSnap, docsSnap] = await Promise.all([
+          ensureTrialForUser(user.uid).catch(() => null),
+          getDoc(doc(db, "users", user.uid)),
+          getDocs(collection(db, "users", user.uid, "documents")),
+        ]);
+
+        const profile = profileSnap.exists() ? profileSnap.data() : {};
+        const planDefinition = getPlanDefinition(profile.plan ?? trialInfo?.plan ?? "free_trial");
+        const storedUsage = normalizeUsage(profile.usage);
+        const documents = docsSnap.docs.map((snapshot) => {
+          const data = snapshot.data();
+          const sizeBytes = Number(data.fileSizeBytes ?? data.fileSize ?? data.size ?? 0);
+          const createdAt = toDate(data.createdAt);
+          const type = data.docType || data.category || data.fileType || "Documento";
+          return {
+            id: snapshot.id,
+            title: String(data.title || data.fileName || type),
+            meta: `${String(type)} · ${createdAt ? formatShortDate(createdAt) : "Sin fecha"}`,
+            sizeBytes,
+            createdAtMs: createdAt?.getTime() ?? 0,
+          };
+        });
+
+        const measuredUsage = {
+          ...storedUsage,
+          documentCount: Math.max(storedUsage.documentCount, documents.length),
+          storageBytesUsed: Math.max(
+            storedUsage.storageBytesUsed,
+            documents.reduce((sum, item) => sum + item.sizeBytes, 0),
+          ),
+        };
+
+        await setDoc(doc(db, "users", user.uid), {
+          usage: measuredUsage,
+          limits: getPlanLimits(planDefinition.id),
+          updatedAt: serverTimestamp(),
+        }, { merge: true }).catch(() => undefined);
+
+        if (!alive) return;
+        setTrial(trialInfo);
+        setPlan(planDefinition);
+        setUsage(measuredUsage);
+        setRecentDocs(documents.sort((a, b) => b.createdAtMs - a.createdAtMs).slice(0, 3));
+      } finally {
+        if (alive) setLoading(false);
+      }
+    });
+
+    return () => {
+      alive = false;
+      unsubscribe();
+    };
   }, []);
 
-  return (
-    <div className="px-4 md:px-12 max-w-6xl mx-auto space-y-6 py-6">
+  const storageRemaining = Math.max(0, plan.maxStorageBytes - usage.storageBytesUsed);
+  const documentsRemaining = Math.max(0, plan.maxDocuments - usage.documentCount);
+  const storagePercent = usagePercent(usage.storageBytesUsed, plan.maxStorageBytes);
+  const documentPercent = usagePercent(usage.documentCount, plan.maxDocuments);
+  const aiPercent = usagePercent(usage.aiTokensUsedMonth, plan.maxAiTokensMonth);
 
-      {/* Saludo */}
+  const trialSubtitle = useMemo(() => {
+    if (!trial) return "Tu plan inicial queda listo para medir documentos, almacenamiento e IA.";
+    if (trial.status === "trial") return `Te quedan ${trial.daysRemaining} dias de prueba gratuita.`;
+    if (trial.status === "trial_expired") return "Tu prueba gratuita finalizo. Puedes activar un plan pago.";
+    return "Tu suscripcion esta activa.";
+  }, [trial]);
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 md:px-12">
       <section>
-        <h2 className="text-2xl md:text-[32px] font-bold text-[#003A7A]"
-          style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
+        <p className="text-xs font-bold uppercase tracking-wider text-[#13696a]">MiSalud FamilIA</p>
+        <h2
+          className="text-2xl font-bold text-[#003A7A] md:text-[32px]"
+          style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}
+        >
           Hola, {displayName}.
         </h2>
-        <p className="text-[#43474e] text-lg">Este es tu centro médico familiar.</p>
+        <p className="text-lg text-[#43474e]">Este es tu centro medico familiar.</p>
       </section>
 
-      {/* Bento grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-
-        {/* Personas a mi cargo */}
-        <section className="md:col-span-8 bg-white rounded-2xl p-4 border border-[rgba(196,198,207,0.3)]"
-          style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xs font-bold text-[#003A7A] uppercase tracking-wider">Personas a mi cargo</h3>
-            <button className="text-[#00B8A9] font-semibold text-xs hover:underline">Ver todos</button>
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="rounded-2xl border border-[rgba(196,198,207,0.3)] bg-white p-5 shadow-[0px_4px_20px_rgba(26,54,93,0.08)] lg:col-span-2">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-[#003A7A]">Plan actual</p>
+              <h3 className="mt-1 text-2xl font-bold text-[#003A7A]" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
+                {plan.label}
+              </h3>
+              <p className="mt-1 max-w-2xl text-sm text-[#43474e]">{trialSubtitle}</p>
+            </div>
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#d7f5f1] px-3 py-1 text-xs font-bold text-[#13696a]">
+              <span className="material-symbols-outlined text-[16px]">verified</span>
+              {plan.priceLabel}
+            </span>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <PersonCard
-              name="Elena" role="Madre"
-              imgSrc="https://lh3.googleusercontent.com/aida-public/AB6AXuAqP712hdaSgoOutFUh-F7gpRc2T8ujc-zHgI21GVa53n2aFzDVu7uSI7sWxmDJErmTQ1NrEh0KQejbCweKzAiXkRhUyOMuEspVxD437sKIyclUSKdBbfgKIe-MJHwoIbCwQO7nTP4F9C3V68ZRcec2g_-1aJgU3jjT96qB7EUq6sG1Y3iyv_eo42aG8-SPyRewhUHukr1cHO1QxSB2f6gEuEX92ynxi0soKx_eljDFQN44r8nglSgva_DauZlok9r8k9Zi0gJmkHop"
-              borderColor="#00B8A9"
+
+          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <UsageMeter
+              icon="description"
+              label="Documentos"
+              value={`${formatNumber(usage.documentCount)} / ${formatNumber(plan.maxDocuments)}`}
+              helper={`Quedan ${formatNumber(documentsRemaining)} documentos`}
+              percent={documentPercent}
             />
-            <PersonCard
-              name="Mateo" role="Hijo"
-              imgSrc="https://lh3.googleusercontent.com/aida-public/AB6AXuBbEhGDp-vlHN45F03a9_hzyu6o9QNbIP3FyTFKV-E_kNmKsNyTLQLjSmgo7mictI4Ihn9k9D1-_OKGlmgmvBS7TvqUDLUGloLDBWFKGDDmC2cQLsPyicZO4BJZpp0S1brispemsyypILwIjqljQRfSDI2ftMzjtHQunmVWGC9TftL9vlUcoqUAp4YyTqDmYyVwkl1fjxV87eqhFSHnsYaFXDHhtZMdUv8gf_im_SYIbHMQiK5IHiLKR7K2ym1uHtD90MdHMZwCk8hq"
-              borderColor="#003A7A"
+            <UsageMeter
+              icon="database"
+              label="Almacenamiento"
+              value={`${formatBytes(usage.storageBytesUsed)} / ${formatBytes(plan.maxStorageBytes)}`}
+              helper={`Quedan ${formatBytes(storageRemaining)}`}
+              percent={storagePercent}
             />
-            <button className="flex flex-col items-center justify-center p-2 rounded-xl border-2 border-dashed border-[#c4c6cf] hover:border-[#00B8A9] transition-colors cursor-pointer">
-              <span className="material-symbols-outlined text-[#74777f] text-3xl">person_add</span>
-              <span className="text-xs mt-1 font-semibold text-[#43474e]">Agregar</span>
-            </button>
+            <UsageMeter
+              icon="auto_awesome"
+              label="IA mensual"
+              value={`${formatNumber(usage.aiTokensUsedMonth)} tokens`}
+              helper={`${formatNumber(usage.aiRequestsMonth)} solicitudes registradas`}
+              percent={aiPercent}
+            />
           </div>
+        </div>
+
+        <div className="rounded-2xl bg-[#003A7A] p-5 text-white shadow-[0px_4px_20px_rgba(26,54,93,0.14)]">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined">calendar_month</span>
+            <p className="text-xs font-bold uppercase tracking-wider opacity-80">Prueba gratuita</p>
+          </div>
+          <p className="mt-4 text-3xl font-bold">{trial?.daysRemaining ?? 30}</p>
+          <p className="text-sm text-[#c7f4ef]">dias restantes</p>
+          <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/20">
+            <div className="h-full rounded-full bg-[#00B8A9]" style={{ width: `${trial?.progress ?? 0}%` }} />
+          </div>
+          <p className="mt-3 text-xs text-white/75">
+            Inicio: {trial ? formatShortDate(trial.startedAt) : "pendiente"} · Fin: {trial ? formatShortDate(trial.endsAt) : "pendiente"}
+          </p>
+        </div>
+      </section>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+        <section className="rounded-2xl border border-[rgba(196,198,207,0.3)] bg-white p-4 shadow-[0px_4px_20px_rgba(26,54,93,0.08)] md:col-span-8">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#003A7A]">Personas a mi cargo</h3>
+            <Link href="/personas" className="text-xs font-semibold text-[#00B8A9] hover:underline">Ver todos</Link>
+          </div>
+          <EmptyState
+            icon="group_add"
+            title="Agrega tu primera persona"
+            text="Registra familiares o personas a cargo para organizar sus documentos medicos."
+            actionHref="/personas/nueva"
+            actionLabel="Agregar persona"
+          />
         </section>
 
-        {/* Próxima cita */}
-        <section className="md:col-span-4 rounded-2xl p-4 relative overflow-hidden flex flex-col"
-          style={{ backgroundColor: "#003A7A", boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-          <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full blur-3xl opacity-20"
-            style={{ backgroundColor: "#00B8A9" }} />
-          <div className="relative z-10 h-full flex flex-col">
-            <div className="flex items-center gap-1 mb-4">
-              <span className="material-symbols-outlined text-white text-[20px]">event</span>
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider opacity-80">Próxima cita</h3>
-            </div>
-            <div className="mt-auto">
-              <p className="text-2xl font-bold text-white mb-1"
-                style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>Mateo González</p>
-              <p className="text-white opacity-90 text-sm mb-4">Pediatría Integral<br />Mañana, 10:30 AM</p>
-              <button className="w-full py-2 rounded-lg font-semibold text-sm hover:scale-[1.02] transition-transform"
-                style={{ backgroundColor: "#B3EDE8", color: "#00968A" }}>
-                Confirmar Asistencia
-              </button>
-            </div>
+        <section className="rounded-2xl border border-[#00B8A9] bg-white p-4 shadow-[0px_4px_20px_rgba(26,54,93,0.08)] md:col-span-4">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="material-symbols-outlined text-[#00B8A9]">auto_awesome</span>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#003A7A]">IA responsable</h3>
           </div>
+          <p className="text-sm leading-relaxed text-[#43474e]">
+            Cuando subas documentos, la IA podra generar resumenes y alertas informativas. El consumo quedara registrado en tu plan.
+          </p>
+          <Link href="/boveda/subir" className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#00B8A9] px-4 py-2 text-sm font-semibold text-white">
+            Subir documento
+            <span className="material-symbols-outlined text-[18px]">upload_file</span>
+          </Link>
         </section>
 
-        {/* AI Insight */}
-        <section className="md:col-span-12 rounded-2xl p-4 border-[1.5px] border-[#00B8A9] bg-white"
-          style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-start gap-4">
-              <div className="p-2 rounded-xl" style={{ backgroundColor: "rgba(162,237,237,0.3)" }}>
-                <span className="material-symbols-outlined text-[#00B8A9] text-3xl">auto_awesome</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-lg font-bold text-[#003A7A]"
-                    style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
-                    Insight de Salud: Elena
-                  </h3>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1"
-                    style={{ backgroundColor: "#c3e8fd", color: "#001e2b" }}>
-                    <span className="material-symbols-outlined text-[12px]">psychology</span> IA RESPONSABLE
-                  </span>
-                </div>
-                <p className="text-sm text-[#43474e] max-w-2xl">
-                  Hemos detectado una <strong className="text-[#003A7A]">tendencia al alza en los niveles de glucosa</strong> de Elena durante los últimos 7 días. Te recomendamos revisar el registro de alimentación o consultar con su nutricionista.
-                </p>
-              </div>
-            </div>
-            <button className="text-white px-6 py-2 rounded-full font-semibold text-sm flex items-center gap-1 self-start md:self-center hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: "#00B8A9" }}>
-              Ver Detalles
-              <span className="material-symbols-outlined text-[18px]">trending_up</span>
-            </button>
-          </div>
-        </section>
-
-        {/* Documentos + Exámenes */}
-        <section className="md:col-span-7 space-y-4">
-          <div className="bg-white rounded-2xl p-4 border border-[rgba(196,198,207,0.3)]"
-            style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xs font-bold text-[#003A7A] uppercase tracking-wider">Documentos recientes</h3>
+        <section className="space-y-4 md:col-span-7">
+          <div className="rounded-2xl border border-[rgba(196,198,207,0.3)] bg-white p-4 shadow-[0px_4px_20px_rgba(26,54,93,0.08)]">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#003A7A]">Documentos recientes</h3>
               <span className="material-symbols-outlined text-[#43474e]">folder_open</span>
             </div>
-            <ul className="space-y-2">
-              <DocItem icon="description" title="Receta Médica - Elena" meta="Hace 2 horas • PDF" />
-              <DocItem icon="lab_research" title="Analítica de Sangre - Mateo" meta="Ayer • PDF" />
-            </ul>
+            {loading ? (
+              <p className="text-sm text-[#43474e]">Cargando documentos...</p>
+            ) : recentDocs.length > 0 ? (
+              <ul className="space-y-2">
+                {recentDocs.map((item) => (
+                  <li key={item.id} className="flex items-center justify-between rounded-xl bg-[#f7fafc] p-3">
+                    <div className="flex min-w-0 items-center gap-2">
+                      <span className="material-symbols-outlined text-[#00B8A9]">description</span>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-[#003A7A]">{item.title}</p>
+                        <p className="text-xs text-[#43474e]">{item.meta} · {formatBytes(item.sizeBytes)}</p>
+                      </div>
+                    </div>
+                    <Link href={`/boveda/${item.id}`} className="rounded-lg p-2 text-[#74777f] hover:bg-[#ebeef0]">
+                      <span className="material-symbols-outlined">chevron_right</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <EmptyState
+                icon="upload_file"
+                title="Aun no tienes documentos"
+                text="Sube historias clinicas, formulas, examenes o autorizaciones para empezar tu boveda."
+                actionHref="/boveda/subir"
+                actionLabel="Subir documento"
+              />
+            )}
           </div>
 
-          <div className="bg-white rounded-2xl p-4 border border-[rgba(196,198,207,0.3)]"
-            style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xs font-bold text-[#003A7A] uppercase tracking-wider">Exámenes con cambios</h3>
-              <span className="material-symbols-outlined text-[#ba1a1a]">notification_important</span>
+          <div className="rounded-2xl border border-[rgba(196,198,207,0.3)] bg-white p-4 shadow-[0px_4px_20px_rgba(26,54,93,0.08)]">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#003A7A]">Examenes con cambios</h3>
+              <span className="material-symbols-outlined text-[#13696a]">monitoring</span>
             </div>
-            <div className="flex items-start gap-4 p-3 rounded-xl border"
-              style={{ backgroundColor: "rgba(255,218,214,0.3)", borderColor: "#ffdad6" }}>
-              <span className="material-symbols-outlined text-[#ba1a1a] mt-0.5">monitoring</span>
-              <div>
-                <p className="text-sm font-semibold text-[#003A7A]">Colesterol LDL - Juan</p>
-                <p className="text-sm text-[#43474e]">Subió de 110 mg/dL a 145 mg/dL. Se sugiere revisión de dieta.</p>
-              </div>
-            </div>
+            <EmptyState
+              icon="science"
+              title="Sin cambios detectados"
+              text="Cuando la IA encuentre variaciones relevantes en examenes, apareceran aqui."
+              actionHref="/boveda"
+              actionLabel="Ver boveda"
+            />
           </div>
         </section>
 
-        {/* Emergencia + Actividad */}
-        <section className="md:col-span-5 space-y-4">
-          <button className="w-full rounded-2xl p-4 flex items-center justify-between group cursor-pointer active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#ba1a1a", color: "#ffffff", boxShadow: "0 4px 12px rgba(186,26,26,0.3)" }}>
+        <section className="space-y-4 md:col-span-5">
+          <Link
+            href="/emergencia"
+            className="flex w-full items-center justify-between rounded-2xl p-4 text-white shadow-[0_4px_12px_rgba(186,26,26,0.3)] active:scale-[0.98]"
+            style={{ backgroundColor: "#ba1a1a" }}
+          >
             <div className="flex items-center gap-4">
               <span className="material-symbols-outlined text-4xl">emergency</span>
-              <div className="text-left">
-                <h3 className="text-xs font-bold uppercase tracking-wider">Resumen de Emergencia</h3>
-                <p className="text-sm opacity-90">Protocolos activos para Elena y Mateo</p>
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider">Resumen de emergencia</h3>
+                <p className="text-sm opacity-90">Disponible cuando registres datos familiares.</p>
               </div>
             </div>
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">chevron_right</span>
-          </button>
+            <span className="material-symbols-outlined">chevron_right</span>
+          </Link>
 
-          <div className="bg-white rounded-2xl p-4 border border-[rgba(196,198,207,0.3)]"
-            style={{ boxShadow: "0px 4px 20px rgba(26,54,93,0.08)" }}>
-            <h3 className="text-xs font-bold text-[#003A7A] uppercase tracking-wider mb-4">Actividad Reciente</h3>
-            <div className="space-y-4 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-px before:bg-[#c4c6cf]">
-              <ActivityItem dot="#00B8A9" time="Hoy, 09:15 AM" text="Se subió el informe dental de Mateo" />
-              <ActivityItem dot="#005EB8" time="Ayer, 06:45 PM" text="Elena completó su registro diario de presión" />
-              <ActivityItem dot="#c4c6cf" time="20 May, 02:00 PM" text="Cita programada con el cardiólogo" />
-            </div>
+          <div className="rounded-2xl border border-[rgba(196,198,207,0.3)] bg-white p-4 shadow-[0px_4px_20px_rgba(26,54,93,0.08)]">
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-[#003A7A]">Actividad reciente</h3>
+            <EmptyState
+              icon="history"
+              title="Sin actividad todavia"
+              text="Las cargas, resumenes y cambios importantes apareceran en esta linea de tiempo."
+              actionHref="/boveda/subir"
+              actionLabel="Crear actividad"
+            />
           </div>
         </section>
       </div>
 
-      {/* Acciones rápidas */}
       <section className="py-2">
-        <h3 className="text-xs font-bold text-[#003A7A] uppercase tracking-wider mb-3">Acciones Rápidas</h3>
+        <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#003A7A]">Acciones rapidas</h3>
         <div className="flex gap-4 overflow-x-auto pb-4" style={{ scrollbarWidth: "none" }}>
           {[
-            { icon: "upload_file", label: "Subir doc." },
-            { icon: "person_add", label: "Agregar pers." },
-            { icon: "summarize", label: "Generar resumen" },
-            { icon: "auto_awesome", label: "Preguntar IA", fill: true },
-            { icon: "share", label: "Compartir doc." },
-          ].map((a) => (
-            <button key={a.label} className="flex-shrink-0 flex flex-col items-center gap-1 group">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"
-                style={{ backgroundColor: "#A5EDE8" }}>
-                <span className="material-symbols-outlined text-2xl text-[#003A7A]"
-                  style={a.fill ? { fontVariationSettings: "'FILL' 1" } : {}}>
-                  {a.icon}
-                </span>
+            { icon: "upload_file", label: "Subir doc.", href: "/boveda/subir" },
+            { icon: "person_add", label: "Agregar pers.", href: "/personas/nueva" },
+            { icon: "summarize", label: "Resumen", href: "/boveda" },
+            { icon: "auto_awesome", label: "Preguntar IA", href: "/boveda" },
+            { icon: "share", label: "Compartir", href: "/boveda" },
+          ].map((action) => (
+            <Link key={action.label} href={action.href} className="group flex flex-shrink-0 flex-col items-center gap-1">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#A5EDE8] transition-transform group-hover:scale-110">
+                <span className="material-symbols-outlined text-2xl text-[#003A7A]">{action.icon}</span>
               </div>
-              <span className="text-xs font-semibold whitespace-nowrap text-[#003A7A]">{a.label}</span>
-            </button>
+              <span className="whitespace-nowrap text-xs font-semibold text-[#003A7A]">{action.label}</span>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* Trust badge */}
-      <div className="flex justify-center py-4 opacity-60">
-        <div className="px-4 py-2 rounded-full flex items-center gap-2"
-          style={{ backgroundColor: "rgba(214,227,255,0.2)" }}>
-          <span className="material-symbols-outlined text-[#003A7A] text-[16px]">lock</span>
-          <span className="text-xs font-bold text-[#003A7A] uppercase tracking-widest">
-            Tus datos están protegidos con grado médico
+      <div className="flex justify-center py-4 opacity-70">
+        <div className="flex items-center gap-2 rounded-full bg-[#d7f5f1] px-4 py-2">
+          <span className="material-symbols-outlined text-[16px] text-[#003A7A]">lock</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-[#003A7A]">
+            Tus datos estan protegidos con grado medico
           </span>
         </div>
       </div>
@@ -202,40 +330,42 @@ export default function DashboardPage() {
   );
 }
 
-function PersonCard({ name, role, imgSrc, borderColor }: { name: string; role: string; imgSrc: string; borderColor: string }) {
-  return (
-    <div className="flex flex-col items-center p-2 rounded-xl hover:bg-[#f1f4f6] transition-colors cursor-pointer group">
-      <div className="w-16 h-16 rounded-full overflow-hidden mb-1 border-2" style={{ borderColor }}>
-        <Image src={imgSrc} alt={name} width={64} height={64} className="w-full h-full object-cover" />
-      </div>
-      <span className="text-sm font-semibold text-[#003A7A] group-hover:text-[#00B8A9]">{name}</span>
-      <span className="text-xs text-[#43474e]">{role}</span>
-    </div>
-  );
-}
+function UsageMeter({ icon, label, value, helper, percent }: { icon: string; label: string; value: string; helper: string; percent: number }) {
+  const barColor = percent >= 90 ? "#ba1a1a" : percent >= 75 ? "#b26a00" : "#00B8A9";
 
-function DocItem({ icon, title, meta }: { icon: string; title: string; meta: string }) {
   return (
-    <li className="flex items-center justify-between p-2 rounded-xl hover:bg-[#ebeef0] transition-colors cursor-pointer">
+    <div className="rounded-xl border border-[#dfe3e8] bg-[#f7fafc] p-4">
       <div className="flex items-center gap-2">
-        <span className="material-symbols-outlined text-[#00B8A9]">{icon}</span>
-        <div>
-          <p className="text-sm font-semibold text-[#003A7A]">{title}</p>
-          <p className="text-xs text-[#43474e]">{meta}</p>
-        </div>
+        <span className="material-symbols-outlined text-[#13696a]">{icon}</span>
+        <p className="text-xs font-bold uppercase tracking-wider text-[#43474e]">{label}</p>
       </div>
-      <span className="material-symbols-outlined text-[#74777f]">download</span>
-    </li>
+      <p className="mt-3 text-lg font-bold text-[#003A7A]">{value}</p>
+      <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#e0e3e5]">
+        <div className="h-full rounded-full" style={{ width: `${percent}%`, backgroundColor: barColor }} />
+      </div>
+      <p className="mt-2 text-xs text-[#43474e]">{helper}</p>
+    </div>
   );
 }
 
-function ActivityItem({ dot, time, text }: { dot: string; time: string; text: string }) {
+function EmptyState({ icon, title, text, actionHref, actionLabel }: { icon: string; title: string; text: string; actionHref: string; actionLabel: string }) {
   return (
-    <div className="relative pl-8">
-      <div className="absolute left-0 top-1.5 w-6 h-6 rounded-full border-4 border-white"
-        style={{ backgroundColor: dot }} />
-      <p className="text-xs text-[#43474e]">{time}</p>
-      <p className="text-sm text-[#003A7A] font-medium">{text}</p>
+    <div className="rounded-xl border border-dashed border-[#c4c6cf] bg-[#f7fafc] p-5 text-center">
+      <span className="material-symbols-outlined text-4xl text-[#00B8A9]">{icon}</span>
+      <p className="mt-2 text-sm font-bold text-[#003A7A]">{title}</p>
+      <p className="mx-auto mt-1 max-w-md text-sm text-[#43474e]">{text}</p>
+      <Link href={actionHref} className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#003A7A] px-4 py-2 text-sm font-semibold text-white">
+        {actionLabel}
+        <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+      </Link>
     </div>
   );
+}
+
+function formatShortDate(date: Date): string {
+  return new Intl.DateTimeFormat("es-CO", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(date);
 }

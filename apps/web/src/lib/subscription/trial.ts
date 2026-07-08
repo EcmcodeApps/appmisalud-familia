@@ -1,5 +1,6 @@
 import { doc, getDoc, serverTimestamp, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
+import { buildPlanLimitFields, DEFAULT_USAGE } from "@/lib/subscription/plans";
 
 export const TRIAL_DAYS = 30;
 
@@ -56,6 +57,8 @@ export function buildTrialFields(now = new Date()) {
     trialEndsAt: Timestamp.fromDate(endsAt),
     subscriptionStatus: "trial" satisfies SubscriptionStatus,
     plan: "free_trial",
+    usage: DEFAULT_USAGE,
+    ...buildPlanLimitFields("free_trial"),
   };
 }
 
@@ -104,6 +107,8 @@ export async function ensureTrialForUser(uid: string): Promise<TrialInfo> {
   }
   if (!data.subscriptionStatus) patch.subscriptionStatus = "trial";
   if (!data.plan) patch.plan = "free_trial";
+  if (!data.usage) patch.usage = DEFAULT_USAGE;
+  if (!data.limits) Object.assign(patch, buildPlanLimitFields(data.plan ?? "free_trial"));
 
   if (Object.keys(patch).length > 0) {
     patch.updatedAt = serverTimestamp();

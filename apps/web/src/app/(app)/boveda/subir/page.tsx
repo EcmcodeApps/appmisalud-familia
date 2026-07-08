@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  collection, addDoc, getDocs, serverTimestamp, query, orderBy,
+  collection, addDoc, getDocs, serverTimestamp, query, orderBy, doc, increment, setDoc,
 } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { db, storage, auth } from "@/lib/firebase/config";
 import { extractDocument } from "@/lib/api/client";
+import { DEFAULT_USAGE } from "@/lib/subscription/plans";
 
 const DOC_TYPES = [
   "Resultado de Laboratorio",
@@ -111,9 +112,29 @@ export default function SubirDocumentoPage() {
           aiProcess,
           fileName: file.name,
           fileType: ext,
+          fileSizeBytes: file.size,
           storagePath,
           downloadURL,
           createdAt: serverTimestamp(),
+        });
+        await setDoc(doc(db, "users", uid), {
+          usage: {
+            documentCount: increment(1),
+            storageBytesUsed: increment(file.size),
+            aiTokensUsedMonth: increment(0),
+            aiRequestsMonth: increment(aiProcess ? 1 : 0),
+          },
+          updatedAt: serverTimestamp(),
+        }, { merge: true }).catch(async () => {
+          await setDoc(doc(db, "users", uid), {
+            usage: {
+              ...DEFAULT_USAGE,
+              documentCount: 1,
+              storageBytesUsed: file.size,
+              aiRequestsMonth: aiProcess ? 1 : 0,
+            },
+            updatedAt: serverTimestamp(),
+          }, { merge: true });
         });
         setUploading(false);
         if (aiProcess) {

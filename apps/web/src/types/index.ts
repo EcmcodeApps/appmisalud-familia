@@ -15,6 +15,21 @@ export type FileType = "pdf" | "jpg" | "jpeg" | "png";
 export type SummaryType = "doctor" | "emergency" | "custom";
 export type SharePermission = "view" | "download";
 export type AIProvider = "deepseek" | "openai" | "grok" | "mock";
+export type PlanId = "free_trial" | "economico" | "familiar" | "premium";
+
+export interface UserUsage {
+  documentCount: number;
+  storageBytesUsed: number;
+  aiTokensUsedMonth: number;
+  aiRequestsMonth: number;
+}
+
+export interface UserLimits {
+  maxDocuments: number;
+  maxStorageBytes: number;
+  maxAiTokensMonth: number;
+  maxAiRequestsMonth: number;
+}
 
 export interface UserConsent {
   medicalDataProcessing: boolean;
@@ -44,7 +59,9 @@ export interface UserProfile {
   role: "user" | "admin" | "owner";
   accountStatus: AccountStatus;
   subscriptionStatus: SubscriptionStatus;
-  plan: "free_trial" | "economico" | "familiar" | string;
+  plan: PlanId | string;
+  usage?: UserUsage;
+  limits?: UserLimits;
   trialStartedAt?: Date;
   trialEndsAt?: Date;
   consent: UserConsent;

@@ -20,11 +20,30 @@ const adminNav = [
 
 const kpis = [
   { icon: "group", label: "Usuarios registrados", value: "128", delta: "+12%", color: "#002045" },
-  { icon: "card_giftcard", label: "En prueba", value: "46", delta: "+8%", color: "#13696a" },
-  { icon: "event_busy", label: "Pruebas vencidas", value: "12", delta: "+2%", color: "#ba1a1a" },
-  { icon: "check_circle", label: "Activos/pagados", value: "18", delta: "+4%", color: "#133a4a" },
+  { icon: "description", label: "Documentos guardados", value: "1.840", delta: "Total", color: "#13696a" },
+  { icon: "database", label: "Storage estimado", value: "42.6 GB", delta: "Firebase", color: "#133a4a" },
+  { icon: "warning", label: "Cerca del limite", value: "9", delta: "Usuarios", color: "#ba1a1a" },
   { icon: "auto_awesome", label: "Tokens IA", value: "1.2M", delta: "+28%", color: "#1a365d" },
-  { icon: "monetization_on", label: "Costo IA", value: "US$18.42", delta: "Mes", color: "#1a6d6e" },
+  { icon: "monetization_on", label: "Costo variable", value: "US$21.22", delta: "Mes", color: "#1a6d6e" },
+];
+
+const planBreakdown = [
+  { plan: "Prueba gratuita", users: 46, documents: 720, storage: "14.2 GB", percent: 36, color: "#13696a" },
+  { plan: "Economico", users: 38, documents: 460, storage: "9.1 GB", percent: 30, color: "#002045" },
+  { plan: "Familiar", users: 31, documents: 520, storage: "13.8 GB", percent: 24, color: "#1a365d" },
+  { plan: "Premium", users: 13, documents: 140, storage: "5.5 GB", percent: 10, color: "#ba1a1a" },
+];
+
+const limitRisks = [
+  { name: "Familia Rodriguez", plan: "Prueba gratuita", metric: "Documentos", used: "28 / 30", percent: 93 },
+  { name: "Carlos Perez", plan: "Economico", metric: "Almacenamiento", used: "920 MB / 1 GB", percent: 90 },
+  { name: "Laura Gomez", plan: "Familiar", metric: "Tokens IA", used: "318.000 / 350.000", percent: 91 },
+];
+
+const firebaseCostModel = [
+  { label: "Cloud Storage", value: "42.6 GB", cost: "US$2.80", helper: "Documentos en boveda" },
+  { label: "Firestore", value: "1.840 docs", cost: "US$0.00 - US$1.20", helper: "Lecturas/escrituras variables" },
+  { label: "OCR + IA", value: "1.2M tokens", cost: "US$18.42", helper: "DeepSeek/OpenAI/Grok" },
 ];
 
 const trialUsers = [
@@ -199,6 +218,54 @@ export default function AdminPage() {
             ))}
           </section>
 
+          <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+            <div className="rounded-2xl border border-[#c4c6cf] bg-white p-6 shadow-sm xl:col-span-2">
+              <div className="mb-5 flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-xl font-bold text-[#002045]" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
+                    Planes y capacidad
+                  </h3>
+                  <p className="text-sm text-[#43474e]">Base para medir documentos, almacenamiento e IA por familia.</p>
+                </div>
+                <span className="rounded-full bg-[#a2eded]/40 px-3 py-1 text-xs font-bold text-[#13696a]">Fase 1</span>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {planBreakdown.map((plan) => (
+                  <PlanMixCard key={plan.plan} {...plan} />
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[#c4c6cf] bg-white p-6 shadow-sm">
+              <h3 className="text-xl font-bold text-[#002045]" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
+                Costos estimados
+              </h3>
+              <p className="mt-1 text-sm text-[#43474e]">Modelo inicial para Firebase Blaze, Google Cloud e IA.</p>
+              <div className="mt-5 space-y-4">
+                {firebaseCostModel.map((item) => (
+                  <CostModelCard key={item.label} {...item} />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="rounded-2xl border border-[#c4c6cf] bg-white p-6 shadow-sm">
+            <div className="mb-5 flex items-center justify-between gap-3">
+              <div>
+                <h3 className="text-xl font-bold text-[#002045]" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
+                  Usuarios cerca del limite
+                </h3>
+                <p className="text-sm text-[#43474e]">En esta fase son alertas informativas; no bloquean carga ni IA.</p>
+              </div>
+              <button className="rounded-lg bg-[#f1f4f6] px-3 py-2 text-sm font-semibold text-[#13696a]">Ver reglas</button>
+            </div>
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              {limitRisks.map((risk) => (
+                <LimitRiskCard key={`${risk.name}-${risk.metric}`} {...risk} />
+              ))}
+            </div>
+          </section>
+
           <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="overflow-hidden rounded-2xl border border-[#c4c6cf] bg-white shadow-sm lg:col-span-2">
               <SectionHeader title="Pruebas gratuitas" action="Ver todas" />
@@ -325,6 +392,73 @@ function KpiCard({ icon, label, value, delta, color }: { icon: string; label: st
       </div>
       <p className="text-xs font-semibold text-[#43474e]">{label}</p>
       <p className="text-2xl font-bold text-[#002045]">{value}</p>
+    </div>
+  );
+}
+
+function PlanMixCard({ plan, users, documents, storage, percent, color }: { plan: string; users: number; documents: number; storage: string; percent: number; color: string }) {
+  return (
+    <div className="rounded-xl border border-[#c4c6cf]/40 bg-[#f7fafc] p-4">
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <div>
+          <p className="font-bold text-[#002045]">{plan}</p>
+          <p className="text-xs text-[#43474e]">{users} familias activas</p>
+        </div>
+        <span className="rounded-full px-2 py-1 text-xs font-bold" style={{ color, backgroundColor: `${color}16` }}>
+          {percent}%
+        </span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-[#e0e3e5]">
+        <div className="h-full rounded-full" style={{ width: `${percent}%`, backgroundColor: color }} />
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <p className="text-xs font-semibold uppercase text-[#74777f]">Documentos</p>
+          <p className="font-bold text-[#002045]">{documents}</p>
+        </div>
+        <div>
+          <p className="text-xs font-semibold uppercase text-[#74777f]">Storage</p>
+          <p className="font-bold text-[#002045]">{storage}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CostModelCard({ label, value, cost, helper }: { label: string; value: string; cost: string; helper: string }) {
+  return (
+    <div className="rounded-xl border border-[#c4c6cf]/40 bg-[#f7fafc] p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-bold text-[#002045]">{label}</p>
+          <p className="text-xs text-[#43474e]">{helper}</p>
+        </div>
+        <p className="text-sm font-bold text-[#13696a]">{cost}</p>
+      </div>
+      <p className="mt-3 text-xs font-semibold uppercase text-[#74777f]">{value}</p>
+    </div>
+  );
+}
+
+function LimitRiskCard({ name, plan, metric, used, percent }: { name: string; plan: string; metric: string; used: string; percent: number }) {
+  const color = percent >= 90 ? "#ba1a1a" : "#b26a00";
+
+  return (
+    <div className="rounded-xl border border-[#c4c6cf]/40 bg-[#f7fafc] p-4">
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <div>
+          <p className="font-bold text-[#002045]">{name}</p>
+          <p className="text-xs text-[#43474e]">{plan} · {metric}</p>
+        </div>
+        <span className="material-symbols-outlined" style={{ color }}>warning</span>
+      </div>
+      <div className="mb-2 flex items-center justify-between text-xs font-semibold text-[#43474e]">
+        <span>{used}</span>
+        <span>{percent}%</span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-[#e0e3e5]">
+        <div className="h-full rounded-full" style={{ width: `${percent}%`, backgroundColor: color }} />
+      </div>
     </div>
   );
 }
