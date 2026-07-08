@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from core.cors import add_cors
 from core.errors import generic_exception_handler, http_exception_handler
-from routers import health, documents, ai
+from routers import health, documents, ai, admin
 
 
 @asynccontextmanager
@@ -30,3 +30,4 @@ app.add_exception_handler(HTTPException, http_exception_handler)
 app.include_router(health.router, tags=["health"])
 app.include_router(documents.router)
 app.include_router(ai.router)
+app.include_router(admin.router)

@@ -7,6 +7,13 @@ import { doc, getDoc } from "firebase/firestore";
 import { getIdTokenResult } from "firebase/auth";
 import { auth, db } from "@/lib/firebase/config";
 import { onAuthChange } from "@/lib/firebase/auth";
+import {
+  updateAdminSubscription,
+  type AdminPlanId,
+  type AdminSubscriptionStatus,
+  type AdminSubscriptionUpdateResponse,
+} from "@/lib/api/client";
+import { formatBytes, getPlanDefinition } from "@/lib/subscription/plans";
 
 const adminNav = [
   { icon: "dashboard", label: "Dashboard", active: true },
@@ -72,12 +79,21 @@ const providerCosts = [
 ];
 
 type AccessState = "checking" | "allowed" | "denied";
+type TargetMode = "email" | "uid";
 
 export default function AdminPage() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [access, setAccess] = useState<AccessState>("checking");
   const [adminName, setAdminName] = useState("Admin Root");
+  const [targetMode, setTargetMode] = useState<TargetMode>("email");
+  const [targetValue, setTargetValue] = useState("");
+  const [selectedPlan, setSelectedPlan] = useState<AdminPlanId>("economico");
+  const [selectedStatus, setSelectedStatus] = useState<AdminSubscriptionStatus>("active");
+  const [changeReason, setChangeReason] = useState("activacion_admin");
+  const [updatingPlan, setUpdatingPlan] = useState(false);
+  const [planUpdateResult, setPlanUpdateResult] = useState<AdminSubscriptionUpdateResponse | null>(null);
+  const [planUpdateError, setPlanUpdateError] = useState("");
 
   useEffect(() => {
     const unsub = onAuthChange(async (user) => {
@@ -103,6 +119,35 @@ export default function AdminPage() {
     () => providerCosts.reduce((sum, item) => sum + Number(item.cost.replace("US$", "")), 0).toFixed(2),
     []
   );
+  const selectedPlanDefinition = getPlanDefinition(selectedPlan);
+
+  async function handleSubscriptionUpdate(event: React.FormEvent) {
+    event.preventDefault();
+    setPlanUpdateError("");
+    setPlanUpdateResult(null);
+
+    const target = targetValue.trim();
+    if (!target) {
+      setPlanUpdateError("Ingresa el email o UID del usuario.");
+      return;
+    }
+
+    setUpdatingPlan(true);
+    try {
+      const result = await updateAdminSubscription({
+        target_email: targetMode === "email" ? target : undefined,
+        target_uid: targetMode === "uid" ? target : undefined,
+        plan: selectedPlan,
+        subscription_status: selectedStatus,
+        reason: changeReason.trim() || "admin_update",
+      });
+      setPlanUpdateResult(result);
+    } catch (error) {
+      setPlanUpdateError(error instanceof Error ? error.message : "No se pudo actualizar el plan.");
+    } finally {
+      setUpdatingPlan(false);
+    }
+  }
 
   if (access === "checking") {
     return (
@@ -263,6 +308,119 @@ export default function AdminPage() {
               {limitRisks.map((risk) => (
                 <LimitRiskCard key={`${risk.name}-${risk.metric}`} {...risk} />
               ))}
+            </div>
+          </section>
+
+          <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+            <div className="rounded-2xl border border-[#c4c6cf] bg-white p-6 shadow-sm xl:col-span-2">
+              <div className="mb-5 flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-bold text-[#002045]" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
+                    Cambiar plan de usuario
+                  </h3>
+                  <p className="text-sm text-[#43474e]">Accion segura via backend. Actualiza plan, estado, limites y deja auditoria.</p>
+                </div>
+                <span className="rounded-full bg-[#002045]/10 px-3 py-1 text-xs font-bold text-[#002045]">Fase 3</span>
+              </div>
+
+              <form onSubmit={handleSubscriptionUpdate} className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="md:col-span-2">
+                  <div className="mb-2 flex w-fit rounded-lg border border-[#c4c6cf] bg-[#f7fafc] p-1">
+                    {(["email", "uid"] as TargetMode[]).map((mode) => (
+                      <button
+                        key={mode}
+                        type="button"
+                        onClick={() => setTargetMode(mode)}
+                        className={`rounded-md px-3 py-1.5 text-xs font-bold ${targetMode === mode ? "bg-[#002045] text-white" : "text-[#43474e]"}`}
+                      >
+                        {mode === "email" ? "Email" : "UID"}
+                      </button>
+                    ))}
+                  </div>
+                  <label className="text-sm font-semibold text-[#43474e]">{targetMode === "email" ? "Email del usuario" : "UID del usuario"}</label>
+                  <input
+                    value={targetValue}
+                    onChange={(event) => setTargetValue(event.target.value)}
+                    placeholder={targetMode === "email" ? "usuario@correo.com" : "Firebase UID"}
+                    className="mt-1 h-12 w-full rounded-xl border border-[#c4c6cf] bg-[#f7fafc] px-4 text-sm outline-none focus:border-[#13696a]"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold text-[#43474e]">Plan</label>
+                  <select
+                    value={selectedPlan}
+                    onChange={(event) => setSelectedPlan(event.target.value as AdminPlanId)}
+                    className="mt-1 h-12 w-full rounded-xl border border-[#c4c6cf] bg-[#f7fafc] px-4 text-sm outline-none focus:border-[#13696a]"
+                  >
+                    <option value="free_trial">Prueba gratuita</option>
+                    <option value="economico">Economico</option>
+                    <option value="familiar">Familiar</option>
+                    <option value="premium">Premium</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold text-[#43474e]">Estado</label>
+                  <select
+                    value={selectedStatus}
+                    onChange={(event) => setSelectedStatus(event.target.value as AdminSubscriptionStatus)}
+                    className="mt-1 h-12 w-full rounded-xl border border-[#c4c6cf] bg-[#f7fafc] px-4 text-sm outline-none focus:border-[#13696a]"
+                  >
+                    <option value="trial">Trial</option>
+                    <option value="trial_expired">Trial vencido</option>
+                    <option value="active">Activo</option>
+                    <option value="past_due">Pago pendiente</option>
+                    <option value="cancelled">Cancelado</option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="text-sm font-semibold text-[#43474e]">Motivo interno</label>
+                  <input
+                    value={changeReason}
+                    onChange={(event) => setChangeReason(event.target.value)}
+                    className="mt-1 h-12 w-full rounded-xl border border-[#c4c6cf] bg-[#f7fafc] px-4 text-sm outline-none focus:border-[#13696a]"
+                  />
+                </div>
+
+                {planUpdateError && (
+                  <div className="md:col-span-2 rounded-xl border border-[#ba1a1a]/30 bg-[#ffdad6]/60 p-3 text-sm font-semibold text-[#ba1a1a]">
+                    {planUpdateError}
+                  </div>
+                )}
+
+                {planUpdateResult && (
+                  <div className="md:col-span-2 rounded-xl border border-[#13696a]/30 bg-[#d7f5f1] p-3 text-sm text-[#13696a]">
+                    Plan actualizado para {planUpdateResult.target_email || planUpdateResult.target_uid}. Limite: {planUpdateResult.limits.maxDocuments} documentos y {formatBytes(planUpdateResult.limits.maxStorageBytes)}.
+                  </div>
+                )}
+
+                <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-xs text-[#43474e]">El cambio se guarda en Firestore y en auditLogs del usuario.</p>
+                  <button
+                    type="submit"
+                    disabled={updatingPlan}
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#002045] px-5 text-sm font-bold text-white disabled:opacity-60"
+                  >
+                    {updatingPlan ? "Actualizando..." : "Aplicar cambio"}
+                    <span className="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div className="rounded-2xl border border-[#c4c6cf] bg-white p-6 shadow-sm">
+              <h3 className="text-xl font-bold text-[#002045]" style={{ fontFamily: "Atkinson Hyperlegible Next, sans-serif" }}>
+                Limites del plan
+              </h3>
+              <p className="mt-1 text-sm text-[#43474e]">{selectedPlanDefinition.description}</p>
+              <div className="mt-5 space-y-3">
+                <LimitLine label="Documentos" value={`${selectedPlanDefinition.maxDocuments}`} />
+                <LimitLine label="Storage" value={formatBytes(selectedPlanDefinition.maxStorageBytes)} />
+                <LimitLine label="Tokens IA/mes" value={`${selectedPlanDefinition.maxAiTokensMonth.toLocaleString("es-CO")}`} />
+                <LimitLine label="Solicitudes IA/mes" value={`${selectedPlanDefinition.maxAiRequestsMonth.toLocaleString("es-CO")}`} />
+              </div>
             </div>
           </section>
 
@@ -459,6 +617,15 @@ function LimitRiskCard({ name, plan, metric, used, percent }: { name: string; pl
       <div className="h-2 overflow-hidden rounded-full bg-[#e0e3e5]">
         <div className="h-full rounded-full" style={{ width: `${percent}%`, backgroundColor: color }} />
       </div>
+    </div>
+  );
+}
+
+function LimitLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between rounded-xl border border-[#c4c6cf]/40 bg-[#f7fafc] px-4 py-3">
+      <span className="text-sm font-semibold text-[#43474e]">{label}</span>
+      <span className="text-sm font-bold text-[#002045]">{value}</span>
     </div>
   );
 }

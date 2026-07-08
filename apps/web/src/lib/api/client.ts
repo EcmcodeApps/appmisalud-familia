@@ -58,6 +58,23 @@ export interface AISummarizeResponse {
   provider: string;
 }
 
+export type AdminPlanId = "free_trial" | "economico" | "familiar" | "premium";
+export type AdminSubscriptionStatus = "trial" | "trial_expired" | "active" | "past_due" | "cancelled";
+
+export interface AdminSubscriptionUpdateResponse {
+  ok: boolean;
+  target_uid: string;
+  target_email?: string;
+  plan: AdminPlanId;
+  subscription_status: AdminSubscriptionStatus;
+  limits: {
+    maxDocuments: number;
+    maxStorageBytes: number;
+    maxAiTokensMonth: number;
+    maxAiRequestsMonth: number;
+  };
+}
+
 // ── Endpoints ──────────────────────────────────────────────────────────────
 
 /**
@@ -103,6 +120,20 @@ export async function summarizeDocuments(params: {
   biological_sex?: string;
 }): Promise<AISummarizeResponse> {
   return request<AISummarizeResponse>("/ai/summarize", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params),
+  });
+}
+
+export async function updateAdminSubscription(params: {
+  target_uid?: string;
+  target_email?: string;
+  plan: AdminPlanId;
+  subscription_status: AdminSubscriptionStatus;
+  reason?: string;
+}): Promise<AdminSubscriptionUpdateResponse> {
+  return request<AdminSubscriptionUpdateResponse>("/admin/subscriptions/update", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(params),
