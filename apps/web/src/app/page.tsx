@@ -41,6 +41,7 @@ export default function LandingPage() {
         <HowItWorksSection />
         <CaregiverSection />
         <SecuritySection />
+        <PricingSection />
         <CtaSection />
       </main>
       <Footer />
@@ -59,6 +60,7 @@ function Header() {
       <ShieldLogo size={32} />
       <nav className="hidden md:flex gap-8 items-center">
         <a className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="#solucion">Solución</a>
+        <a className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="#planes">Planes</a>
         <Link className="text-sm text-[#42474e] hover:text-[#003A7A] transition-colors" href="/seguridad-informacion-medica">Seguridad</Link>
         <Link
           href="/login"
@@ -94,6 +96,14 @@ function Header() {
           >
             Solución
             <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+          </a>
+          <a
+            className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-[#42474e] active:bg-[#ebeef0]"
+            href="#planes"
+            onClick={closeMenu}
+          >
+            Planes
+            <span className="material-symbols-outlined text-[20px]">payments</span>
           </a>
           <Link
             className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-[#42474e] active:bg-[#ebeef0]"
@@ -163,7 +173,7 @@ function HeroSection() {
             <div className="w-px h-4 bg-[#c4c6cf]" />
             <div className="flex items-center gap-1">
               <span className="material-symbols-outlined text-[20px]">group</span>
-              <span className="text-xs">Perfiles ilimitados</span>
+              <span className="text-xs">Perfiles familiares</span>
             </div>
           </div>
         </div>
@@ -454,6 +464,164 @@ function SecuritySection() {
   );
 }
 
+function PricingSection() {
+  const plans = [
+    {
+      name: "Prueba gratis",
+      badge: "30 dias",
+      price: "$0",
+      period: "sin tarjeta",
+      description: "Para probar la boveda medica familiar con datos reales y sin compromiso.",
+      limits: ["30 documentos", "1 GB de almacenamiento", "IA limitada", "Recordatorios basicos"],
+      cta: "Empezar gratis",
+      href: "/register",
+      icon: "card_giftcard",
+      featured: false,
+    },
+    {
+      name: "Economico",
+      badge: "Entrada",
+      price: "$12.900",
+      period: "COP / mes",
+      description: "Para familias que quieren organizar documentos y usar IA ocasionalmente.",
+      limits: ["100 documentos", "1 GB por familia", "IA basica mensual", "Carga de PDF e imagenes"],
+      cta: "Elegir economico",
+      href: "/register",
+      icon: "savings",
+      featured: false,
+    },
+    {
+      name: "Familiar",
+      badge: "Recomendado",
+      price: "$24.900",
+      period: "COP / mes",
+      description: "El plan ideal para hogares con varios integrantes y seguimiento medico frecuente.",
+      limits: ["300 documentos", "5 GB por familia", "IA normal mensual", "Resumenes y alertas preventivas"],
+      cta: "Elegir familiar",
+      href: "/register",
+      icon: "family_restroom",
+      featured: true,
+    },
+    {
+      name: "Premium",
+      badge: "Alto uso",
+      price: "$49.900",
+      period: "COP / mes",
+      description: "Para historiales amplios, adultos mayores, enfermedades cronicas o uso intensivo.",
+      limits: ["1.000 documentos", "10 GB por familia", "IA ampliada mensual", "Mayor capacidad de archivo"],
+      cta: "Elegir premium",
+      href: "/register",
+      icon: "workspace_premium",
+      featured: false,
+    },
+  ];
+
+  const addOns = [
+    { icon: "database", title: "GB adicional", value: "$5.000 COP / mes" },
+    { icon: "auto_awesome", title: "Paquete extra IA", value: "$7.000 - $10.000 COP / mes" },
+    { icon: "calendar_month", title: "Pago anual", value: "Paga 10 meses y recibe 12" },
+  ];
+
+  return (
+    <section id="planes" className="bg-[#f7fafc] px-4 py-24 md:px-12">
+      <div className="mx-auto max-w-7xl">
+        <div data-reveal className="mx-auto mb-12 max-w-3xl text-center">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#B3EDE8] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#00968A]">
+            <span className="material-symbols-outlined text-[18px]">payments</span>
+            Planes para cada familia
+          </span>
+          <h3 className="font-[Atkinson_Hyperlegible_Next] text-3xl font-bold text-[#003A7A] md:text-5xl">
+            Empieza gratis y crece segun tu boveda medica.
+          </h3>
+          <p className="mt-4 text-lg text-[#42474e]">
+            Los planes combinan almacenamiento, documentos e IA responsable para que el costo sea claro desde el primer dia.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
+          {plans.map((plan) => (
+            <div
+              key={plan.name}
+              data-reveal
+              className={`relative flex h-full flex-col rounded-2xl border p-6 shadow-[0px_4px_20px_rgba(26,54,93,0.08)] ${
+                plan.featured
+                  ? "border-[#00B8A9] bg-[#003A7A] text-white lg:-mt-4 lg:mb-4"
+                  : "border-[#c4c6cf]/50 bg-white text-[#181c1e]"
+              }`}
+            >
+              {plan.featured && (
+                <div className="absolute -top-4 left-6 rounded-full bg-[#A5EDE8] px-4 py-1 text-xs font-bold uppercase tracking-wider text-[#002020]">
+                  Mejor valor
+                </div>
+              )}
+              <div className="mb-6 flex items-center justify-between gap-3">
+                <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${plan.featured ? "bg-white/10" : "bg-[#B3EDE8]/40"}`}>
+                  <span className={`material-symbols-outlined ${plan.featured ? "text-[#A5EDE8]" : "text-[#00B8A9]"}`}>{plan.icon}</span>
+                </div>
+                <span className={`rounded-full px-3 py-1 text-xs font-bold ${plan.featured ? "bg-white/10 text-[#A5EDE8]" : "bg-[#f1f4f6] text-[#003A7A]"}`}>
+                  {plan.badge}
+                </span>
+              </div>
+              <h4 className={`font-[Atkinson_Hyperlegible_Next] text-2xl font-bold ${plan.featured ? "text-white" : "text-[#003A7A]"}`}>
+                {plan.name}
+              </h4>
+              <p className={`mt-2 min-h-16 text-sm leading-relaxed ${plan.featured ? "text-[#d6e3ff]" : "text-[#42474e]"}`}>
+                {plan.description}
+              </p>
+              <div className="mt-6">
+                <div className="flex items-end gap-2">
+                  <span className={`font-[Atkinson_Hyperlegible_Next] text-4xl font-bold ${plan.featured ? "text-white" : "text-[#003A7A]"}`}>
+                    {plan.price}
+                  </span>
+                  <span className={`pb-1 text-sm ${plan.featured ? "text-[#d6e3ff]" : "text-[#42474e]"}`}>{plan.period}</span>
+                </div>
+              </div>
+              <ul className="mt-6 flex-1 space-y-3">
+                {plan.limits.map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-sm">
+                    <span className={`material-symbols-outlined mt-0.5 text-[18px] ${plan.featured ? "text-[#A5EDE8]" : "text-[#00B8A9]"}`}>check_circle</span>
+                    <span className={plan.featured ? "text-white" : "text-[#42474e]"}>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href={plan.href}
+                className={`mt-8 inline-flex h-12 items-center justify-center rounded-xl text-sm font-bold transition-all active:scale-[0.98] ${
+                  plan.featured
+                    ? "bg-[#A5EDE8] text-[#002020] hover:shadow-lg"
+                    : "bg-[#003A7A] text-white hover:opacity-90"
+                }`}
+              >
+                {plan.cta}
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        <div data-reveal className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {addOns.map((item) => (
+            <div key={item.title} className="flex items-center gap-4 rounded-2xl border border-[#c4c6cf]/40 bg-white p-5 shadow-[0px_4px_20px_rgba(26,54,93,0.06)]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#B3EDE8]/40">
+                <span className="material-symbols-outlined text-[#00B8A9]">{item.icon}</span>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#003A7A]">{item.title}</p>
+                <p className="text-sm text-[#42474e]">{item.value}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div data-reveal className="mt-10 rounded-2xl border border-[#00B8A9]/30 bg-[#B3EDE8]/20 p-5 text-center">
+          <p className="text-sm font-semibold text-[#003A7A]">
+            Precios sugeridos para Colombia. La facturacion final puede ajustarse por impuestos, comisiones de pasarela y promociones de lanzamiento.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CtaSection() {
   return (
     <section className="py-24 px-4 md:px-12 text-center">
@@ -493,9 +661,10 @@ function Footer() {
         <div>
           <h5 className="font-bold mb-6">Producto</h5>
           <ul className="space-y-4 text-sm opacity-70">
-            {["Características", "Seguridad", "Planes", "IA Responsable"].map((item) => (
-              <li key={item}><a className="hover:opacity-100 transition-opacity" href="#">{item}</a></li>
-            ))}
+            <li><a className="hover:opacity-100 transition-opacity" href="#solucion">Características</a></li>
+            <li><Link className="hover:opacity-100 transition-opacity" href="/seguridad-informacion-medica">Seguridad</Link></li>
+            <li><a className="hover:opacity-100 transition-opacity" href="#planes">Planes</a></li>
+            <li><a className="hover:opacity-100 transition-opacity" href="#solucion">IA Responsable</a></li>
           </ul>
         </div>
         <div>
