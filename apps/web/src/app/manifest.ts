@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "AppMiSalud Familia",
-    short_name: "MiSalud",
-    description: "Boveda medica familiar inteligente para organizar documentos de salud.",
+    name: "MiSalud FamilIA",
+    short_name: "MiSalud IA",
+    description: "Bóveda médica familiar inteligente — organiza y comparte documentos de salud con IA.",
     id: "/",
     start_url: "/",
     scope: "/",

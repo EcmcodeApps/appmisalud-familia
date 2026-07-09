@@ -1,15 +1,24 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
   title: "MiSalud FamilIA",
   description: "Bóveda médica familiar inteligente — organiza y comparte documentos médicos de forma segura.",
   manifest: "/manifest.json",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "MiSalud FamilIA" },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "MiSalud FamilIA",
+    startupImage: "/icons/splash-1170x2532.png",
+  },
+  icons: {
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2563eb",
+  themeColor: "#003A7A",
   width: "device-width",
   initialScale: 1,
 };
@@ -30,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-full antialiased">
+        <ServiceWorkerRegister />
         {children}
       </body>
     </html>
