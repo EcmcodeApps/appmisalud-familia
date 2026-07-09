@@ -50,8 +50,18 @@ export default function LoginPage() {
     try {
       const result = await loginWithGoogle();
       router.push(getLoginDestination(result));
-    } catch {
-      setError("No pudimos conectar con Google. Intenta de nuevo.");
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code ?? "";
+      if (code === "auth/unauthorized-domain") {
+        setError("Dominio no autorizado en Firebase. Contacta al administrador.");
+      } else if (code === "auth/popup-blocked") {
+        setError("El navegador bloqueó la ventana emergente. Permite popups para este sitio.");
+      } else if (code === "auth/popup-closed-by-user") {
+        setError("Cerraste la ventana de Google antes de completar el proceso.");
+      } else {
+        setError("No pudimos conectar con Google. Intenta de nuevo.");
+      }
+      console.error("[MiSalud FamilIA] Google Auth error:", code, err);
     } finally {
       setGoogleLoading(false);
     }
