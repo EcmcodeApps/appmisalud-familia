@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { loginUser, loginWithGoogle } from "@/lib/firebase/auth";
+import { loginUser, loginWithGoogle, loginWithGoogleRedirect, getGoogleRedirectResult } from "@/lib/firebase/auth";
 import { ShieldLogo, ShieldIcon } from "@/components/ShieldLogo";
 
 type LoginDestination = {
@@ -24,6 +24,21 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({ email: "", password: "" });
+
+  // Captura el resultado si el usuario viene de un redirect de Google
+  useEffect(() => {
+    setGoogleLoading(true);
+    getGoogleRedirectResult()
+      .then((result) => {
+        if (result) router.push(getLoginDestination(result));
+      })
+      .catch((err: unknown) => {
+        const code = (err as { code?: string })?.code ?? "";
+        console.error("[MiSalud FamilIA] Redirect result error:", code, err);
+        setError(`Error al ingresar con Google (${code || "desconocido"}). Intenta de nuevo.`);
+      })
+      .finally(() => setGoogleLoading(false));
+  }, [router]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -48,21 +63,36 @@ export default function LoginPage() {
     setGoogleLoading(true);
     setError("");
     try {
+      // Intenta popup primero
       const result = await loginWithGoogle();
       router.push(getLoginDestination(result));
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code ?? "";
-      if (code === "auth/unauthorized-domain") {
-        setError("Dominio no autorizado en Firebase. Contacta al administrador.");
-      } else if (code === "auth/popup-blocked") {
-        setError("El navegador bloqueó la ventana emergente. Permite popups para este sitio.");
-      } else if (code === "auth/popup-closed-by-user") {
-        setError("Cerraste la ventana de Google antes de completar el proceso.");
-      } else {
-        setError("No pudimos conectar con Google. Intenta de nuevo.");
+      console.error("[MiSalud FamilIA] Popup error:", code, err);
+
+      // Si el popup fue bloqueado o no está disponible, usar redirect
+      if (
+        code === "auth/popup-blocked" ||
+        code === "auth/popup-closed-by-user" ||
+        code === "auth/cancelled-popup-request" ||
+        code === "auth/operation-not-supported-in-this-environment"
+      ) {
+        try {
+          await loginWithGoogleRedirect();
+          // La página se recarga — el useEffect captura el resultado al volver
+        } catch (redirectErr: unknown) {
+          const redirectCode = (redirectErr as { code?: string })?.code ?? "";
+          setError(`Error al redirigir a Google (${redirectCode || "desconocido"}).`);
+          setGoogleLoading(false);
+        }
+        return;
       }
-      console.error("[MiSalud FamilIA] Google Auth error:", code, err);
-    } finally {
+
+      if (code === "auth/unauthorized-domain") {
+        setError(`Dominio no autorizado (${window.location.hostname}). Revisa la configuración de Firebase.`);
+      } else {
+        setError(`Error al ingresar con Google (${code || "desconocido"}). Intenta de nuevo.`);
+      }
       setGoogleLoading(false);
     }
   }

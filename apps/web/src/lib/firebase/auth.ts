@@ -7,6 +7,8 @@ import {
   GoogleAuthProvider,
   getIdTokenResult,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   type User,
 } from "firebase/auth";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
@@ -21,9 +23,17 @@ export interface GoogleLoginResult {
   role: "user" | "admin" | "owner";
 }
 
-export async function loginWithGoogle(): Promise<GoogleLoginResult> {
-  const { user } = await signInWithPopup(auth, googleProvider);
+export async function loginWithGoogleRedirect(): Promise<void> {
+  await signInWithRedirect(auth, googleProvider);
+}
 
+export async function getGoogleRedirectResult(): Promise<GoogleLoginResult | null> {
+  const result = await getRedirectResult(auth);
+  if (!result) return null;
+  return syncGoogleUser(result.user);
+}
+
+async function syncGoogleUser(user: User): Promise<GoogleLoginResult> {
   try {
     const userRef = doc(db, "users", user.uid);
     const snap = await getDoc(userRef);
@@ -66,10 +76,15 @@ export async function loginWithGoogle(): Promise<GoogleLoginResult> {
       },
     });
   } catch (error) {
-    console.warn("[AppMiSalud] Google Auth completó, pero no se pudo sincronizar el perfil.", error);
+    console.warn("[MiSalud FamilIA] Google Auth completó, pero no se pudo sincronizar el perfil.", error);
   }
 
   return { user, onboardingCompleted: false, role: await getClaimRole(user) ?? "user" };
+}
+
+export async function loginWithGoogle(): Promise<GoogleLoginResult> {
+  const { user } = await signInWithPopup(auth, googleProvider);
+  return syncGoogleUser(user);
 }
 
 export async function registerUser(
